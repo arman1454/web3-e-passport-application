@@ -1,0 +1,9 @@
+
+first do npm i
+
+then open terminal and launch it as npm run dev
+
+Make sure metamask is installed and I used Holesky test network for the contract deployment
+
+
+github repo - https://github.com/arman1454/Passport_Dapp

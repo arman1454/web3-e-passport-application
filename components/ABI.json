@@ -1,0 +1,69 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "age",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "birthdate",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "country",
+                "type": "string"
+            }
+        ],
+        "name": "register",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "wallet",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "age",
+                "type": "uint256"
+            }
+        ],
+        "name": "verify",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_age",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "birthdate",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "country",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
