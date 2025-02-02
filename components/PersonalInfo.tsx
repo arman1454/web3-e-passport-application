@@ -1,63 +1,52 @@
 import React, { useState } from 'react'
 import { useForm } from "react-hook-form"
-import { undefined, z } from "zod"
+import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { useFormStore } from "@/app/store"
 const PersonalInfo = () => {
+    const { formData, updateFormData } = useFormStore()
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
     const formSchema = z.object({
-        username: z.string().min(2, {
-            message: "Username must be at least 2 characters."
+        gender: z.string({ message: "Please Select gender" }),
+        fullName: z.string().min(2, {
+            message: "Must be at least 2 characters."
         }),
-        gender: z.string({ message: "Please Select gender" })
+        firstName: z.string().min(2, {
+            message: "Must be at least 2 characters."
+        }),
+        surName: z.string().min(2, {
+            message: "Must be at least 2 characters."
+        }),
     })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            username: "",
+            fullName: formData.personalInfo.fullName,
+            firstName:formData.personalInfo.firstName,
+            surName: formData.personalInfo.surName
         },
         mode:"onSubmit"
     })
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
         console.log(values)
+        updateFormData("personalInfo", { gender: values.gender,fullName:values.fullName,firstName:values.firstName,surName:values.surName })
     }
     return (
         <div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="shadcn" {...field} 
-                                    onChange={(e)=>{
-                                        field.onChange(e);
-                                        setIsSubmitted(false);
-                                    }}
-                                    />
-                                </FormControl>
-                                {IsSubmitted && (<FormMessage/>)}
 
-
-                                
-                            </FormItem>
-                        )}
-                    />
                     <FormField
                         control={form.control}
                         name="gender"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Gender</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} defaultValue={formData.personalInfo.gender}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue placeholder="Select a Gender" />
@@ -75,11 +64,75 @@ const PersonalInfo = () => {
                                 <FormMessage />
 
 
+
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="fullName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Full Name</FormLabel>
+                                <FormControl>
+                                    <Input defaultValue={formData.personalInfo.fullName} className='w-1/2' placeholder="Full Name" {...field} 
+                                    onChange={(e)=>{
+                                        field.onChange(e);
+                                        setIsSubmitted(false);
+                                    }}
+                                    />
+                                </FormControl>
+                                {IsSubmitted && (<FormMessage/>)}
+
+
                                 
                             </FormItem>
                         )}
                     />
-                    <Button type="submit" onClick={()=>setIsSubmitted(true)}>Submit</Button>
+                    <FormField
+                        control={form.control}
+                        name="firstName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>First Name</FormLabel>
+                                <FormControl>
+                                    <Input className='w-1/2' placeholder="First Name" {...field} 
+                                    onChange={(e)=>{
+                                        field.onChange(e);
+                                        setIsSubmitted(false);
+                                    }}
+                                    />
+                                </FormControl>
+                                {IsSubmitted && (<FormMessage/>)}
+
+
+                                
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="surName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Sur Name</FormLabel>
+                                <FormControl>
+                                    <Input className='w-1/2' placeholder="Sur Name" {...field} 
+                                    onChange={(e)=>{
+                                        field.onChange(e);
+                                        setIsSubmitted(false);
+                                    }}
+                                    />
+                                </FormControl>
+                                {IsSubmitted && (<FormMessage/>)}
+
+
+                                
+                            </FormItem>
+                        )}
+                    />
+                    
+                    <Button type="submit" onClick={()=>setIsSubmitted(true)}>Save and Continue</Button>
                 </form>
             </Form>
 

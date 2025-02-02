@@ -6,8 +6,8 @@ export const useFormStore = create(
         (set)=>({
             formData:{
                 passportType: {type:""},
-                personalInfo:{},
-                address:{},
+                personalInfo:{gender:"",fullName:"",firstName:"",surName:""},
+                address:{district:"",city:"",block:"",postOffice:"",postalCode:"",policeStation:""},
                 
             },
 

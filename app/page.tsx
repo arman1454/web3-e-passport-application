@@ -12,7 +12,7 @@ import { useState } from "react";
 export default function Home() {
     const [active,setActive] = useState("");
     const items = [{name:"Passport Type",status:true},{name:"Personal Information",status:true},
-        {name:"Address",status:false},
+        {name:"Address",status:true},
         {name:"ID Documents",status:false}]
 
     return(
