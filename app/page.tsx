@@ -11,16 +11,18 @@ import { useState } from "react";
 
 export default function Home() {
     const [active,setActive] = useState("");
-    const items = ["Passport Type","Personal Information","Address","ID Documents"]
-    
+    const items = [{name:"Passport Type",status:true},{name:"Personal Information",status:true},
+        {name:"Address",status:false},
+        {name:"ID Documents",status:false}]
+
     return(
         <>
         <div className="flex items-start justify-center gap-10 pt-36">
           <div className="flex flex-col items-center justify-between h-80">
                 {
                     items.map((item, key) => (
-                        <Button onClick={() => setActive(item)}>
-                            {item}
+                        <Button onClick={() => setActive(item.name)} disabled={!item.status}>
+                            {item.name}
                         </Button>
                     ))
                 }
