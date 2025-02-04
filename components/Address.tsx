@@ -32,7 +32,8 @@ const Address = () => {
             message: "Must be at least 2 characters."
         }),
         policeStation: z.string({ message: "Please Select a Police station" }),
-        same: z.boolean().default(false).optional(),
+        yes: z.boolean().default(false).optional(),
+        no: z.boolean().default(false).optional(),
         country: z.string({ message: "Please Select Country" }),
     })
     const form = useForm<z.infer<typeof formSchema>>({
@@ -41,13 +42,14 @@ const Address = () => {
             city: formData.address.city,
             block: formData.address.block,
             postalCode: formData.address.postalCode,
-            same:formData.address.same
+            yes:formData.address.same,
+            no:formData.address.same,
         },
         mode: "onSubmit"
     })
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
-        updateFormData("address", { district: values.district, city: values.city, block: values.block, postOffice: values.postOffice, postalCode: values.postalCode, policeStation: values.policeStation, same:values.same })
+        updateFormData("address", { district: values.district, city: values.city, block: values.block, postOffice: values.postOffice, postalCode: values.postalCode, policeStation: values.policeStation, yes:values.yes,no:values.no })
     }
     return (
         <div className='flex flex-col gap-4'>
@@ -210,30 +212,60 @@ const Address = () => {
                         )}
                     />
 
+                    <CardDescription>Present Address</CardDescription>
+                    <CardDescription>Note: Present address is subjected to RPO/BM. The RPO will reject your application if it does not belong to their jurisdiction. Your payment for the passport may be void and is not reimbursed if the information is incorrect!</CardDescription>
+
+
                     <FormField
                         control={form.control}
-                        name="same"
-                        render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                                <FormControl>
-                                    <Checkbox
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                </FormControl>
+                        name="yes"
+                        render={({ field}) => (
+                            <FormItem className="flex flex-col items-start space-y-4 rounded-md border p-4 shadow">
                                 <div className="space-y-1 leading-none">
                                     <FormLabel>
-                                        Present address is the same as permanent
+                                        Present address is the same as permanent?
                                     </FormLabel>
+                                </div>
+                                <div className='flex space-x-10'>
+                                
+                                    <FormLabel>
+                                        Yes
+                                    </FormLabel>
+                                <FormControl>
+                                    <Checkbox
+                                            checked={formData.address.yes}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                    
+                                </FormControl>         
+                                </div>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="no"
+                        render={({ field}) => (
+                            <FormItem className="flex flex-col items-start space-y-4 rounded-md border p-4 shadow">
+                                <div className='flex space-x-10'>
+                                
+                                    <FormLabel>
+                                        No
+                                    </FormLabel>
+                                <FormControl>
+                                    <Checkbox
+                                            checked={formData.address.no}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                    
+                                </FormControl>         
                                 </div>
                             </FormItem>
                         )}
                     />
 
                     
-                        <CardDescription>Present Address</CardDescription>
-                        <CardDescription>Note: Present address is subjected to RPO/BM. The RPO will reject your application if it does not belong to their jurisdiction. Your payment for the passport may be void and is not reimbursed if the information is incorrect!</CardDescription>
-                    
+                        
 
                     <FormField
                         control={form.control}
