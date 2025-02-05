@@ -18,21 +18,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import {useFormStore} from "@/app/store"
 
-
-const FormSchema = z.object({
-    type: z.enum(["ordinary", "official"], {
-        required_error: "You need to select a passport type.",
-    }),
-})
+import { passportTypeFormSchema } from "@/app/UI_Schemas"
 
 const PassportType = () => {
 
     const {formData, updateFormData} = useFormStore()
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+    const form = useForm<z.infer<typeof passportTypeFormSchema>>({
+        resolver: zodResolver(passportTypeFormSchema),
     })
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
+    function onSubmit(data: z.infer<typeof passportTypeFormSchema>) {
         console.log(data.type);
         updateFormData("passportType",{type:data.type})
     } 

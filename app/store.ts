@@ -21,9 +21,13 @@ export const useFormStore = create(
 
             resetForm: () => set({
                 formData: {
-                    passportType: {},
-                    personalInfo: {},
-                    address: {},
+                    passportType: { type: "" },
+                    personalInfo: { gender: "", fullName: "", firstName: "", surName: "" },
+                    address: {
+                        district: "", city: "", block: "", postOffice: "", postalCode: "",
+                        policeStation: "", yes: false, no: false, country: "",
+                        district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: ""
+                    },
                     
 }}),
         }),

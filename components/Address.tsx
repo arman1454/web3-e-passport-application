@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Card,
     CardContent,
@@ -16,38 +16,24 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { useFormStore } from "@/app/store"
 import { Checkbox } from "@/components/ui/checkbox"
+import { shallow } from "zustand/shallow";
+import { addressFormSchema } from '@/app/UI_Schemas'
 const Address = () => {
-    const { formData, updateFormData } = useFormStore()
+    const addressForm = useFormStore((state) => state?.formData.address, shallow);
+    const updateFormData = useFormStore((state) => state?.updateFormData);
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
-    const formSchema = z.object({
-        district: z.string({ message: "Please Select a district" }),
-        city: z.string().min(2, {
-            message: "Must be at least 2 characters."
-        }),
-        block: z.string().min(2, {
-            message: "Must be at least 2 characters."
-        }),
-        postOffice: z.string({ message: "Please Select post Office" }),
-        postalCode: z.string().min(2, {
-            message: "Must be at least 2 characters."
-        }),
-        policeStation: z.string({ message: "Please Select a Police station" }),
-        yes: z.boolean().default(false).optional(),
-        no: z.boolean().default(false).optional(),
-        country: z.string({ message: "Please Select Country" }),
-    })
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof addressFormSchema>>({
+        resolver: zodResolver(addressFormSchema),
         defaultValues: {
-            city: formData.address.city,
-            block: formData.address.block,
-            postalCode: formData.address.postalCode,
-            yes:formData.address.same,
-            no:formData.address.same,
+            city: addressForm.city,
+            block: addressForm.block,
+            postalCode: addressForm.postalCode,
+            yes:addressForm.yes,
+            no:addressForm.no,
         },
         mode: "onSubmit"
     })
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof addressFormSchema>) {
         console.log(values)
         updateFormData("address", { district: values.district, city: values.city, block: values.block, postOffice: values.postOffice, postalCode: values.postalCode, policeStation: values.policeStation, yes:values.yes,no:values.no })
     }
@@ -66,7 +52,7 @@ const Address = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Select District</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={formData.address.district}>
+                                <Select onValueChange={field.onChange} defaultValue={addressForm.district}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue/>
@@ -96,7 +82,7 @@ const Address = () => {
                             <FormItem>
                                 <FormLabel>City/Village/House</FormLabel>
                                 <FormControl>
-                                    <Input defaultValue={formData.address.city} className='w-1/2' {...field}
+                                    <Input defaultValue={addressForm.city} className='w-1/2' {...field}
                                         onChange={(e) => {
                                             field.onChange(e);
                                             setIsSubmitted(false);
@@ -117,7 +103,7 @@ const Address = () => {
                             <FormItem>
                                 <FormLabel>Road/Block/Sector(optional)</FormLabel>
                                 <FormControl>
-                                    <Input defaultValue={formData.personalInfo.block} className='w-1/2' {...field}
+                                    <Input defaultValue={addressForm.block} className='w-1/2' {...field}
                                         onChange={(e) => {
                                             field.onChange(e);
                                             setIsSubmitted(false);
@@ -138,7 +124,7 @@ const Address = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Select Post Office</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={formData.address.postOffice}>
+                                <Select onValueChange={field.onChange} defaultValue={addressForm.postOffice}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue/>
@@ -168,7 +154,7 @@ const Address = () => {
                             <FormItem>
                                 <FormLabel>Postal code</FormLabel>
                                 <FormControl>
-                                    <Input defaultValue={formData.address.postalCode} className='w-1/2' {...field}
+                                    <Input defaultValue={addressForm.postalCode} className='w-1/2' {...field}
                                         onChange={(e) => {
                                             field.onChange(e);
                                             setIsSubmitted(false);
@@ -189,7 +175,7 @@ const Address = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Select Police Station</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={formData.address.policeStation}>
+                                <Select onValueChange={field.onChange} defaultValue={addressForm.policeStation}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue />
@@ -233,8 +219,11 @@ const Address = () => {
                                     </FormLabel>
                                 <FormControl>
                                     <Checkbox
-                                            checked={formData.address.yes}
-                                        onCheckedChange={field.onChange}
+                                            checked={form.watch("yes")}
+                                        onCheckedChange={(checked)=>{
+                                            field.onChange(checked);
+                                            form.setValue("no",!checked);
+                                        }}
                                     />
                                     
                                 </FormControl>         
@@ -245,7 +234,7 @@ const Address = () => {
                     <FormField
                         control={form.control}
                         name="no"
-                        render={({ field}) => (
+                        render={({field}) => (
                             <FormItem className="flex flex-col items-start space-y-4 rounded-md border p-4 shadow">
                                 <div className='flex space-x-10'>
                                 
@@ -254,8 +243,11 @@ const Address = () => {
                                     </FormLabel>
                                 <FormControl>
                                     <Checkbox
-                                            checked={formData.address.no}
-                                        onCheckedChange={field.onChange}
+                                            checked={form.watch("no")}
+                                            onCheckedChange={(checked) => {
+                                                field.onChange(checked);
+                                                form.setValue("yes", !checked);
+                                            }}
                                     />
                                     
                                 </FormControl>         
@@ -273,7 +265,7 @@ const Address = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Select Country</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={formData.address.country}>
+                                <Select onValueChange={field.onChange} defaultValue={addressForm.country}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue />

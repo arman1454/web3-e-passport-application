@@ -7,23 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { useFormStore } from "@/app/store"
+import { personalInfoFormSchema } from '@/app/UI_Schemas';
 const PersonalInfo = () => {
     const { formData, updateFormData } = useFormStore()
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
-    const formSchema = z.object({
-        gender: z.string({ message: "Please Select gender" }),
-        fullName: z.string().min(2, {
-            message: "Must be at least 2 characters."
-        }),
-        firstName: z.string().min(2, {
-            message: "Must be at least 2 characters."
-        }),
-        surName: z.string().min(2, {
-            message: "Must be at least 2 characters."
-        }),
-    })
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+ 
+    const form = useForm<z.infer<typeof personalInfoFormSchema>>({
+        resolver: zodResolver(personalInfoFormSchema),
         defaultValues: {
             fullName: formData.personalInfo.fullName,
             firstName:formData.personalInfo.firstName,
@@ -31,7 +21,7 @@ const PersonalInfo = () => {
         },
         mode:"onSubmit"
     })
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    function onSubmit(values: z.infer<typeof personalInfoFormSchema>) {
         console.log(values)
         updateFormData("personalInfo", { gender: values.gender,fullName:values.fullName,firstName:values.firstName,surName:values.surName })
     }
