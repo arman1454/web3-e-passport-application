@@ -20,9 +20,12 @@ import {useFormStore} from "@/app/store"
 
 import { passportTypeFormSchema } from "@/app/UI_Schemas"
 
+import { PassportType_Inf } from "@/app/store"
+
 const PassportType = () => {
 
-    const {formData, updateFormData} = useFormStore()
+    const passportTypeForm = useFormStore((state)=>state.formData.passportType) as PassportType_Inf
+    const updateFormData = useFormStore((state) => state.updateFormData);
     const form = useForm<z.infer<typeof passportTypeFormSchema>>({
         resolver: zodResolver(passportTypeFormSchema),
     })
@@ -46,7 +49,7 @@ const PassportType = () => {
                               <FormControl>
                                   <RadioGroup
                                       onValueChange={field.onChange}
-                                      defaultValue={formData.passportType.type}
+                                      defaultValue={passportTypeForm.type}
                                       className="flex flex-col space-y-1"
                                   >
                                       <FormItem className="flex items-center space-x-3 space-y-0">

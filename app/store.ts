@@ -1,7 +1,49 @@
 import { create } from 'zustand'
 import { persist } from "zustand/middleware";
 
-export const useFormStore = create(
+export interface Address_Inf{
+    district: string;
+    city: string;
+    block: string;
+    postOffice: string;
+    postalCode: string;
+    policeStation: string;
+    yes: boolean;
+    no: boolean;
+    country: string;
+    district2: string;
+    city2: string;
+    block2: string;
+    postOffice2: string;
+    postalCode2: string;
+    policeStation2: string;
+}
+
+export interface PersonalInfo_Inf {
+    gender: string;
+    fullName: string;
+    firstName: string;
+    surName: string;
+}
+
+export interface PassportType_Inf {
+    type: string;
+}
+
+interface FormState {
+    formData: {
+        passportType: PassportType_Inf;
+        personalInfo: PersonalInfo_Inf;
+        address: Address_Inf;
+    };
+    updateFormData: <K extends keyof FormState["formData"]>(
+        section: K,
+        newData: Partial<FormState["formData"][K]>
+    ) => void;
+    resetForm: () => void;
+}
+
+export const useFormStore = create<FormState>()(
     persist(
         (set)=>({
             formData:{

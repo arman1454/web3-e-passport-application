@@ -8,16 +8,18 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { useFormStore } from "@/app/store"
 import { personalInfoFormSchema } from '@/app/UI_Schemas';
+import { PersonalInfo_Inf } from '@/app/store';
 const PersonalInfo = () => {
-    const { formData, updateFormData } = useFormStore()
+    const personalInfoForm= useFormStore((state)=>state.formData.personalInfo) as PersonalInfo_Inf
+    const updateFormData = useFormStore((state) => state.updateFormData);
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
  
     const form = useForm<z.infer<typeof personalInfoFormSchema>>({
         resolver: zodResolver(personalInfoFormSchema),
         defaultValues: {
-            fullName: formData.personalInfo.fullName,
-            firstName:formData.personalInfo.firstName,
-            surName: formData.personalInfo.surName
+            fullName: personalInfoForm.fullName,
+            firstName:personalInfoForm.firstName,
+            surName: personalInfoForm.surName
         },
         mode:"onSubmit"
     })
@@ -36,7 +38,7 @@ const PersonalInfo = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Gender</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={formData.personalInfo.gender}>
+                                <Select onValueChange={field.onChange} defaultValue={personalInfoForm.gender}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
                                             <SelectValue placeholder="Select a Gender" />
@@ -65,7 +67,7 @@ const PersonalInfo = () => {
                             <FormItem>
                                 <FormLabel>Full Name</FormLabel>
                                 <FormControl>
-                                    <Input defaultValue={formData.personalInfo.fullName} className='w-1/2' placeholder="Full Name" {...field} 
+                                    <Input defaultValue={personalInfoForm.fullName} className='w-1/2' placeholder="Full Name" {...field} 
                                     onChange={(e)=>{
                                         field.onChange(e);
                                         setIsSubmitted(false);

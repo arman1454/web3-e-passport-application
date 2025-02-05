@@ -18,9 +18,10 @@ import { useFormStore } from "@/app/store"
 import { Checkbox } from "@/components/ui/checkbox"
 import { shallow } from "zustand/shallow";
 import { addressFormSchema } from '@/app/UI_Schemas'
+import { Address_Inf } from '@/app/store'
 const Address = () => {
-    const addressForm = useFormStore((state) => state?.formData.address, shallow);
-    const updateFormData = useFormStore((state) => state?.updateFormData);
+    const addressForm = useFormStore((state) => state.formData.address) as Address_Inf
+    const updateFormData = useFormStore((state) => state.updateFormData);
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
     const form = useForm<z.infer<typeof addressFormSchema>>({
         resolver: zodResolver(addressFormSchema),
