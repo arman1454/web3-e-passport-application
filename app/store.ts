@@ -17,6 +17,7 @@ export interface Address_Inf{
     postOffice2: string;
     postalCode2: string;
     policeStation2: string;
+    officeType:string
 }
 
 export interface PersonalInfo_Inf {
@@ -50,7 +51,7 @@ export const useFormStore = create<FormState>()(
                 passportType: {type:""},
                 personalInfo:{gender:"",fullName:"",firstName:"",surName:""},
                 address:{district:"",city:"",block:"",postOffice:"",postalCode:"",policeStation:"",
-                    yes: false, no:false, country: "", district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: ""
+                    yes: false, no: false, country: "", district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: "", officeType:"Regional Passport Office (RPO)"
 },
                 
             },
@@ -68,7 +69,7 @@ export const useFormStore = create<FormState>()(
                     address: {
                         district: "", city: "", block: "", postOffice: "", postalCode: "",
                         policeStation: "", yes: false, no: false, country: "",
-                        district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: ""
+                        district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: "", officeType:"Regional Passport Office (RPO)"
                     },
                     
 }}),
