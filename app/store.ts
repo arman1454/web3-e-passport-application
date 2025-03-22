@@ -25,6 +25,12 @@ export interface PersonalInfo_Inf {
     fullName: string;
     firstName: string;
     surName: string;
+    profession:string
+    religion:string
+    countryCode:string
+    mobileNo:string
+    birthCountry:string
+    birthDistrict:string
 }
 
 export interface PassportType_Inf {
@@ -49,7 +55,7 @@ export const useFormStore = create<FormState>()(
         (set)=>({
             formData:{
                 passportType: {type:""},
-                personalInfo:{gender:"",fullName:"",firstName:"",surName:""},
+                personalInfo:{gender:"",fullName:"",firstName:"",surName:"",profession:"",religion:"",countryCode:"",mobileNo:"",birthCountry:"",birthDistrict:""},
                 address:{district:"",city:"",block:"",postOffice:"",postalCode:"",policeStation:"",
                     yes: false, no: false, country: "", district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: "", officeType:"Regional Passport Office (RPO)"
 },
@@ -65,7 +71,7 @@ export const useFormStore = create<FormState>()(
             resetForm: () => set({
                 formData: {
                     passportType: { type: "" },
-                    personalInfo: { gender: "", fullName: "", firstName: "", surName: "" },
+                    personalInfo: { gender: "", fullName: "", firstName: "", surName: "", profession:"", religion:"", countryCode:"",mobileNo:"",birthCountry:"",birthDistrict:""},
                     address: {
                         district: "", city: "", block: "", postOffice: "", postalCode: "",
                         policeStation: "", yes: false, no: false, country: "",
