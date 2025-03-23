@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { useEffect, useState } from "react";
 
-// import { toast } from "@/components/hooks/use-toast"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -13,31 +13,46 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+} from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "./ui/label";
 
-import { useFormStore } from "@/app/store"
-
-import { passportTypeFormSchema } from "@/app/UI_Schemas"
-
-import { PassportType_Inf } from "@/app/store"
-import { Label } from "./ui/label"
+import { useFormStore } from "@/app/store";
+import { passportTypeFormSchema } from "@/app/UI_Schemas";
+import { PassportType_Inf } from "@/app/store";
 
 const PassportType = () => {
-
-    const passportTypeForm = useFormStore((state) => state.formData.passportType) as PassportType_Inf
+    const passportTypeForm = useFormStore((state) => state.formData.passportType) as PassportType_Inf;
     const updateFormData = useFormStore((state) => state.updateFormData);
+
+    // ✅ Wait for Zustand hydration
+    const [hydrated, setHydrated] = useState(false);
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+
     const form = useForm<z.infer<typeof passportTypeFormSchema>>({
         resolver: zodResolver(passportTypeFormSchema),
-    })
+        defaultValues: { type: passportTypeForm.type || undefined }, // ✅ Fix type mismatch
+        mode: "onChange",
+    });
+
+    // ✅ Ensure Zustand and React Hook Form stay in sync
+    useEffect(() => {
+        form.reset({ type: passportTypeForm.type || undefined }); // ✅ Fix type mismatch
+    }, [passportTypeForm, form]);
 
     function onSubmit(data: z.infer<typeof passportTypeFormSchema>) {
         console.log(data.type);
-        updateFormData("passportType", { type: data.type })
+        updateFormData("passportType", { type: data.type });
+    }
+
+    if (!hydrated) {
+        return <p>Loading...</p>; // ✅ Prevents flickering
     }
 
     return (
-        <div className='flex flex-col gap-4 bg-card rounded-lg lg:w-3/4 w-full'>
+        <div className="flex flex-col gap-4 bg-card rounded-lg lg:w-3/4 w-full">
             <div className="flex flex-col items-center lg:items-start gap-4 mt-4 mx-4">
                 <Label>Passport Type</Label>
                 <Label className="text-center lg:text-start">Select the Passport Type for your applications!</Label>
@@ -52,24 +67,20 @@ const PassportType = () => {
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
-                                        defaultValue={passportTypeForm.type}
+                                        value={field.value} // ✅ Keeps Zustand in sync
                                         className="flex flex-col space-y-4"
                                     >
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                             <FormControl>
                                                 <RadioGroupItem value="ordinary" />
                                             </FormControl>
-                                            <FormLabel className="font-normal">
-                                                Ordinary Passport
-                                            </FormLabel>
+                                            <FormLabel className="font-normal">Ordinary Passport</FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                             <FormControl>
                                                 <RadioGroupItem value="official" />
                                             </FormControl>
-                                            <FormLabel className="font-normal">
-                                                Official Passport
-                                            </FormLabel>
+                                            <FormLabel className="font-normal">Official Passport</FormLabel>
                                         </FormItem>
                                     </RadioGroup>
                                 </FormControl>
@@ -81,7 +92,7 @@ const PassportType = () => {
                 </form>
             </Form>
         </div>
-    )
-}
+    );
+};
 
-export default PassportType
+export default PassportType;

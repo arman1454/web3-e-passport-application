@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,20 +13,35 @@ const PersonalInfo = () => {
     const personalInfoForm= useFormStore((state)=>state.formData.personalInfo) as PersonalInfo_Inf
     const updateFormData = useFormStore((state) => state.updateFormData);
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
- 
+    const [hydrated, setHydrated] = useState(false);
+
     const form = useForm<z.infer<typeof personalInfoFormSchema>>({
         resolver: zodResolver(personalInfoFormSchema),
-        defaultValues: {
-            fullName: personalInfoForm.fullName,
-            firstName:personalInfoForm.firstName,
-            surName: personalInfoForm.surName,
-            mobileNo:personalInfoForm.mobileNo
-        },
-        mode:"onSubmit"
-    })
+        defaultValues: personalInfoForm, // ✅ Ensure all fields are included
+        mode: "onChange",
+    });
+
+    // ✅ Ensure Zustand has loaded before rendering form
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+
+    // ✅ Sync Zustand data to React Hook Form after hydration
+    useEffect(() => {
+        if (hydrated) {
+            form.reset(personalInfoForm);
+        }
+    }, [hydrated, personalInfoForm, form]);
+
+    
+
     function onSubmit(values: z.infer<typeof personalInfoFormSchema>) {
         console.log(values)
-        updateFormData("personalInfo", { gender: values.gender,fullName:values.fullName,firstName:values.firstName,surName:values.surName,profession:values.profession,religion:values.religion,countryCode:values.countryCode,mobileNo:values.mobileNo,birthCountry:values.birthCountry,birthDistrict:values.birthDistrict })
+        updateFormData("personalInfo", values)
+    }
+
+    if (!hydrated) {
+        return <p>Loading...</p>; // ✅ Prevent flickering
     }
     return (
         <div className='bg-card px-4 lg:w-4/5'>

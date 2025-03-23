@@ -34,8 +34,9 @@ export interface PersonalInfo_Inf {
 }
 
 export interface PassportType_Inf {
-    type: string;
+    type: "ordinary" | "official" | ""; // ✅ Only allows the correct values
 }
+
 
 interface FormState {
     formData: {
@@ -54,7 +55,7 @@ export const useFormStore = create<FormState>()(
     persist(
         (set)=>({
             formData:{
-                passportType: {type:""},
+                passportType: { type: "" as "ordinary" | "official" | "" },
                 personalInfo:{gender:"",fullName:"",firstName:"",surName:"",profession:"",religion:"",countryCode:"",mobileNo:"",birthCountry:"",birthDistrict:""},
                 address:{district:"",city:"",block:"",postOffice:"",postalCode:"",policeStation:"",
                     yes: false, no: false, country: "", district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: "", officeType:"Regional Passport Office (RPO)"
