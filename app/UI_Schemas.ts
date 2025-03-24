@@ -21,9 +21,30 @@ export const personalInfoFormSchema = z.object({
     profession: z.string({ message: "Please Select a profession" }),
     religion: z.string({ message: "Please Select Your Religion" }),
     countryCode: z.string({ message: "Please Select Your Country Code" }),
-    mobileNo: z.string().length(13, { message: "Wrong Number format" }),
+    mobileNo: z.string()
+        .min(10, { message: "Mobile number must be at least 10 characters" })
+        .max(15, { message: "Mobile number cannot exceed 15 characters" })
+        .regex(/^\+\d+$/, { message: "Mobile number must start with '+' followed by digits" }),
     birthCountry: z.string({ message: "Please Select Your Birth Country" }), 
-    birthDistrict: z.string({ message: "Please Select Your Birth District" }), 
+    birthDistrict: z.string({ message: "Please Select Your Birth District" }),
+    birthDate: z.preprocess(
+        // This preprocessor ensures date objects remain valid when coming from storage
+        (val) => {
+            // If it's already a Date object
+            if (val instanceof Date) return val; 
+            // If it's a string that looks like a date (from JSON parsing)
+            if (typeof val === 'string') return new Date(val);
+            // Otherwise, return as is (null, undefined)
+            return val;
+        },
+        z.date({ 
+            required_error: "Please select a birth date",
+            invalid_type_error: "That's not a valid date!" 
+        }).nullable().refine(value => value !== null, {
+            message: "Please select your birth date"
+        })
+    ),
+    citizenType: z.string({ message: "Please Select Your Citizenship Type" })
 })
 
 export const addressFormSchema = z

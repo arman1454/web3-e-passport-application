@@ -31,6 +31,8 @@ export interface PersonalInfo_Inf {
     mobileNo:string
     birthCountry:string
     birthDistrict:string
+    birthDate: Date | null
+    citizenType:string
 }
 
 export interface PassportType_Inf {
@@ -56,7 +58,7 @@ export const useFormStore = create<FormState>()(
         (set)=>({
             formData:{
                 passportType: { type: "" as "ordinary" | "official" | "" },
-                personalInfo:{gender:"",fullName:"",firstName:"",surName:"",profession:"",religion:"",countryCode:"",mobileNo:"",birthCountry:"",birthDistrict:""},
+                personalInfo:{gender:"",fullName:"",firstName:"",surName:"",profession:"",religion:"",countryCode:"",mobileNo:"",birthCountry:"",birthDistrict:"", birthDate: null,citizenType:""},
                 address:{district:"",city:"",block:"",postOffice:"",postalCode:"",policeStation:"",
                     yes: false, no: false, country: "", district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: "", officeType:"Regional Passport Office (RPO)"
 },
@@ -72,7 +74,7 @@ export const useFormStore = create<FormState>()(
             resetForm: () => set({
                 formData: {
                     passportType: { type: "" },
-                    personalInfo: { gender: "", fullName: "", firstName: "", surName: "", profession:"", religion:"", countryCode:"",mobileNo:"",birthCountry:"",birthDistrict:""},
+                    personalInfo: { gender: "", fullName: "", firstName: "", surName: "", profession:"", religion:"", countryCode:"",mobileNo:"",birthCountry:"",birthDistrict:"", birthDate: null, citizenType:""},
                     address: {
                         district: "", city: "", block: "", postOffice: "", postalCode: "",
                         policeStation: "", yes: false, no: false, country: "",
