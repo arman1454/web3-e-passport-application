@@ -15,9 +15,10 @@ import {
     DrawerFooter,
     useDisclosure,
 } from "@heroui/react";
+import { Label } from "@/components/ui/label";
 
 export default function Home() {
-    const [active, setActive] = useState("Personal Information");
+    const [active, setActive] = useState("Address");
     const items = [
         { name: "Passport Type", status: true },
         { name: "Personal Information", status: true },
@@ -33,7 +34,10 @@ export default function Home() {
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row items-start lg:justify-center gap-10 pt-36">
+            <div className="text-center p-12">
+                <Label className="lg:text-lg">Please fill in all required information step by step in each section.</Label>
+            </div>
+            <div className="flex flex-col lg:flex-row items-start lg:justify-center gap-10">
                 {/* Mobile Button to Open Drawer */}
                 <div className="pl-12">
                     <Button className="lg:hidden" onClick={onOpen}>Open Menu</Button>

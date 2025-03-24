@@ -20,10 +20,12 @@ import { addressFormSchema } from '@/app/UI_Schemas'
 import { Address_Inf } from '@/app/store'
 import { RadioGroup, RadioGroupItem } from './ui/radio-group'
 const Address = () => {
-    const [yes,setYes] = useState(false);
+    
     const addressForm = useFormStore((state) => state.formData.address) as Address_Inf
     const updateFormData = useFormStore((state) => state.updateFormData);
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
+    const [yes, setYes] = useState(addressForm.yes);
+    const [no, setNo] = useState(addressForm.no);
     const form = useForm<z.infer<typeof addressFormSchema>>({
         resolver: zodResolver(addressFormSchema),
         defaultValues: {
@@ -267,10 +269,12 @@ const Address = () => {
                                             <FormLabel className="text-sm">Yes</FormLabel>
                                             <FormControl>
                                                 <Checkbox
-                                                    checked={field.value}
+                                                    checked={yes}
                                                     onCheckedChange={(checked) => {
                                                         field.onChange(checked);
                                                         form.setValue("no", !checked); // Uncheck "No" when "Yes" is selected
+                                                        setYes(true)
+                                                        setNo(false)
                                                     }}
                                                 />
                                             </FormControl>
@@ -290,10 +294,12 @@ const Address = () => {
                                             <FormLabel className="text-sm">No</FormLabel>
                                             <FormControl>
                                                 <Checkbox
-                                                    checked={field.value}
+                                                    checked={no}
                                                     onCheckedChange={(checked) => {
                                                         field.onChange(checked);
                                                         form.setValue("yes", !checked); // Uncheck "Yes" when "No" is selected
+                                                        setNo(true)
+                                                        setYes(false)
                                                     }}
                                                 />
                                             </FormControl>
@@ -308,7 +314,7 @@ const Address = () => {
                     
                         
 
-                   {/* { yes && ( 
+                   { !yes && no && ( 
                     <>
                     <FormField
                         control={form.control}
@@ -494,9 +500,9 @@ const Address = () => {
                             />
 
                         </>
-                            )} */}
+                            )}
                     <CardDescription>Available Regional Passport Office and Bangladesh Mission</CardDescription>
-                    {/* <FormField
+                    <FormField
                         control={form.control}
                         name="officeType"
                         render={({ field }) => (
@@ -528,7 +534,7 @@ const Address = () => {
                                 <FormMessage />
                             </FormItem>
                         )}
-                    /> */}
+                    />
 
                     
                     <Button type="submit">Submit</Button>
