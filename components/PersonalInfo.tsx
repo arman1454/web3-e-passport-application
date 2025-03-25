@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { CalendarIcon } from 'lucide-react';
 import { format } from "date-fns";
 import { ScrollArea } from './ui/scroll-area';
+import { CardHeader, CardTitle } from './ui/card';
 
 // Type for form values with nullable birthDate
 type FormValues = z.infer<typeof personalInfoFormSchema>;
@@ -103,6 +104,9 @@ const PersonalInfo = () => {
 
     return (
         <div className="bg-card px-4 lg:w-4/5">
+            <CardHeader>
+                <CardTitle className='text-lg'>Personal Information</CardTitle>
+            </CardHeader>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
                     {/* Gender Field */}

@@ -49,46 +49,82 @@ export const personalInfoFormSchema = z.object({
 
 export const addressFormSchema = z
     .object({
-        district: z.string({ message: "Please Select a district" }),
+        district: z.string({ message: "Please select a district" }),
         city: z.string().min(2, { message: "Must be at least 2 characters." }),
         block: z.string().min(2, { message: "Must be at least 2 characters." }),
-        postOffice: z.string({ message: "Please Select post Office" }),
+        postOffice: z.string({ message: "Please select a post office" }),
         postalCode: z.string().min(2, { message: "Must be at least 2 characters." }),
-        policeStation: z.string({ message: "Please Select a Police station" }),
+        policeStation: z.string({ message: "Please select a police station" }),
         yes: z.boolean().default(false),
         no: z.boolean().default(false),
-        country: z.string({ message: "Please Select Country" }).optional(),
-        district2: z.string({ message: "Please Select a district" }).optional(),
-        city2: z.string().min(2, { message: "Must be at least 2 characters." }).optional(),
-        block2: z.string().min(2, { message: "Must be at least 2 characters." }).optional(),
-        postOffice2: z.string({ message: "Please Select post Office" }).optional(),
-        postalCode2: z.string().min(2, { message: "Must be at least 2 characters." }).optional(),
-        policeStation2: z.string({ message: "Please Select a Police station" }).optional(),
+        country: z.string().optional(),
+        district2: z.string().optional(),
+        city2: z.string().optional(),
+        block2: z.string().optional(),
+        postOffice2: z.string().optional(),
+        postalCode2: z.string().optional(),
+        policeStation2: z.string().optional(),
         officeType: z.enum(["Regional Passport Office (RPO)", "Bangladesh Mission"], {
-            required_error: "You need to select a passport type.",
+            required_error: "You need to select an office type.",
         }),
-    }).refine((data) => data.yes || data.no, {
+    })
+    // Ensure either Yes or No is selected
+    .refine((data) => data.yes || data.no, {
         message: "Please select either Yes or No.",
         path: ["yes"],
     })
-// .refine(
-//     (data) => {
-//         if (data.no) {
-//             // If "No" is selected, present address fields must be filled
-//             return (
-//                 data.country &&
-//                 data.district2 &&
-//                 data.city2 &&
-//                 data.block2 &&
-//                 data.postOffice2 &&
-//                 data.postalCode2 &&
-//                 data.policeStation2
-//             );
-//         }
-//         return true; // If "No" is not selected, no validation needed
-//     },
-//     {
-//         message: "Please fill out the present address fields.",
-//         path: ["district2"], // This will show the error under one of the present address fields
-//     }
-// );
+    // Conditional validation for present address fields
+    .superRefine((data, ctx) => {
+        // If "No" is selected, validate present address fields
+        if (data.no) {
+            if (!data.country) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Please select a country",
+                    path: ["country"],
+                });
+            }
+            if (!data.district2) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Please select a district",
+                    path: ["district2"],
+                });
+            }
+            if (!data.city2 || data.city2.length < 2) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "City must be at least 2 characters",
+                    path: ["city2"],
+                });
+            }
+            if (!data.block2 || data.block2.length < 2) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Block must be at least 2 characters",
+                    path: ["block2"],
+                });
+            }
+            if (!data.postOffice2) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Please select a post office",
+                    path: ["postOffice2"],
+                });
+            }
+            if (!data.postalCode2 || data.postalCode2.length < 2) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Postal code must be at least 2 characters",
+                    path: ["postalCode2"],
+                });
+            }
+            if (!data.policeStation2) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "Please select a police station",
+                    path: ["policeStation2"],
+                });
+            }
+        }
+    });

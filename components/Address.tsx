@@ -19,84 +19,80 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { addressFormSchema } from '@/app/UI_Schemas'
 import { Address_Inf } from '@/app/store'
 import { RadioGroup, RadioGroupItem } from './ui/radio-group'
+
+// Type for form values with proper typing for officeType
+type FormValues = Omit<z.infer<typeof addressFormSchema>, 'officeType'> & {
+    officeType: "Regional Passport Office (RPO)" | "Bangladesh Mission";
+};
+
 const Address = () => {
-    
-    const addressForm = useFormStore((state) => state.formData.address) as Address_Inf
+    const addressForm = useFormStore((state) => state.formData.address) as Address_Inf;
     const updateFormData = useFormStore((state) => state.updateFormData);
-    const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
-    const [yes, setYes] = useState(addressForm.yes);
-    const [no, setNo] = useState(addressForm.no);
-    const form = useForm<z.infer<typeof addressFormSchema>>({
-        resolver: zodResolver(addressFormSchema),
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [hydrated, setHydrated] = useState(false);
+    
+    // Use the values from the store with proper typing
+    const form = useForm<FormValues>({
+        resolver: zodResolver(addressFormSchema) as any,
         defaultValues: {
-            city: addressForm.city,
-            block: addressForm.block,
-            postalCode: addressForm.postalCode,
-            yes:addressForm.yes,
-            no:addressForm.no,
-            // city2: addressForm.city2,
-            // block2: addressForm.block2,
-            // postalCode2: addressForm.postalCode2,sadasdasdas
+            ...addressForm,
+            officeType: addressForm.officeType as "Regional Passport Office (RPO)" | "Bangladesh Mission"
         },
-        mode: "onSubmit"
-    })
-    // function onSubmit(values: z.infer<typeof addressFormSchema>) {
-    //     console.log("inside");
+        mode: "onChange"
+    });
+
+    // Watch values for the radio buttons to control conditional rendering
+    const showPresentAddress = form.watch("no");
+
+    // ✅ Ensure Zustand has loaded before rendering form
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+
+    // ✅ Sync Zustand data to React Hook Form after hydration
+    useEffect(() => {
+        if (hydrated) {
+            form.reset({
+                ...addressForm,
+                officeType: addressForm.officeType as "Regional Passport Office (RPO)" | "Bangladesh Mission"
+            });
+        }
+    }, [hydrated, addressForm, form]);
+
+    function onSubmit(values: FormValues) {
+        let updatedValues = { ...values };
+        console.log(values);
         
-    //     let presentAddress = {};
-
-    //     if (values.yes) {
-    //         // Copy permanent address to present address
-    //         presentAddress = {
-    //             country: "Bangladesh", // Assuming Bangladesh is default
-    //             district2: values.district,
-    //             city2: values.city,
-    //             block2: values.block,
-    //             postOffice2: values.postOffice,
-    //             postalCode2: values.postalCode,
-    //             policeStation2: values.policeStation
-    //         };
-    //     } else {
-    //         // Use the manually filled present address
-    //         presentAddress = {
-    //             country: values.country,
-    //             district2: values.district2,
-    //             city2: values.city2,
-    //             block2: values.block2,
-    //             postOffice2: values.postOffice2,
-    //             postalCode2: values.postalCode2,
-    //             policeStation2: values.policeStation2
-    //         };
-    //     }
-
-    //     // Updating form data with permanent & present address
-    //     updateFormData("address", {
-    //         district: values.district,
-    //         city: values.city,
-    //         block: values.block,
-    //         postOffice: values.postOffice,
-    //         postalCode: values.postalCode,
-    //         policeStation: values.policeStation,
-    //         yes: values.yes,
-    //         no: values.no,
-    //         ...presentAddress, // Spread the selected present address
-    //     });
+        // If "Yes" is selected, copy permanent address values to present address
+        if (values.yes) {
+            updatedValues = {
+                ...values,
+                country: "Bangladesh", // Default to Bangladesh
+                district2: values.district,
+                city2: values.city,
+                block2: values.block,
+                postOffice2: values.postOffice,
+                postalCode2: values.postalCode,
+                policeStation2: values.policeStation
+            };
+        }
         
-    // }
-
-    function onSubmit(values: z.infer<typeof addressFormSchema>) {
-        console.log(values)
-        updateFormData("address", { district: values.district, city: values.city, block: values.block, postOffice: values.postOffice, postalCode: values.postalCode, policeStation: values.policeStation, yes: values.yes, no: values.no })
+        updateFormData("address", updatedValues);
     }
+
+    if (!hydrated) {
+        return <p>Loading...</p>; // ✅ Prevent flickering
+    }
+
     return (
-        <div className='flex flex-col gap-4'>
-            <CardHeader>
-                <CardTitle>Address</CardTitle>
+        <div className='px-4 bg-card flex flex-col gap-4 lg:w-4/5'>
+            <CardHeader className='pb-2'>
+                <CardTitle className='text-lg'>Address</CardTitle>
             </CardHeader>
             <CardDescription>Permanent Address</CardDescription>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-
+                    {/* District Field */}
                     <FormField
                         control={form.control}
                         name="district"
@@ -106,26 +102,21 @@ const Address = () => {
                                 <Select onValueChange={field.onChange} defaultValue={addressForm.district}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
-                                            <SelectValue/>
+                                            <SelectValue placeholder="Select a district"/>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-
-                                        <SelectItem value="Male">Dhaka</SelectItem>
-                                        <SelectItem value="Female">Khulna</SelectItem>
-                                        <SelectItem value="Other">Chittagong</SelectItem>
-
+                                        <SelectItem value="Dhaka">Dhaka</SelectItem>
+                                        <SelectItem value="Khulna">Khulna</SelectItem>
+                                        <SelectItem value="Chittagong">Chittagong</SelectItem>
                                     </SelectContent>
                                 </Select>
-
-                                <FormMessage />
-
-
-
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
 
+                    {/* City Field */}
                     <FormField
                         control={form.control}
                         name="city"
@@ -133,42 +124,45 @@ const Address = () => {
                             <FormItem>
                                 <FormLabel>City/Village/House</FormLabel>
                                 <FormControl>
-                                    <Input defaultValue={addressForm.city} className='w-1/2' {...field}
+                                    <Input 
+                                        className='w-1/2'
+                                        placeholder="Enter city/village/house" 
+                                        {...field}
                                         onChange={(e) => {
                                             field.onChange(e);
                                             setIsSubmitted(false);
                                         }}
                                     />
                                 </FormControl>
-                                {IsSubmitted && (<FormMessage />)}
-
-
-
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
+
+                    {/* Block Field */}
                     <FormField
                         control={form.control}
                         name="block"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Road/Block/Sector(optional)</FormLabel>
+                                <FormLabel>Road/Block/Sector</FormLabel>
                                 <FormControl>
-                                    <Input defaultValue={addressForm.block} className='w-1/2' {...field}
+                                    <Input 
+                                        className='w-1/2'
+                                        placeholder="Enter road/block/sector" 
+                                        {...field}
                                         onChange={(e) => {
                                             field.onChange(e);
                                             setIsSubmitted(false);
                                         }}
                                     />
                                 </FormControl>
-                                {IsSubmitted && (<FormMessage />)}
-
-
-
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
 
+                    {/* Post Office Field */}
                     <FormField
                         control={form.control}
                         name="postOffice"
@@ -178,48 +172,44 @@ const Address = () => {
                                 <Select onValueChange={field.onChange} defaultValue={addressForm.postOffice}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
-                                            <SelectValue/>
+                                            <SelectValue placeholder="Select a post office"/>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-
-                                        <SelectItem value="Male">Office 1</SelectItem>
-                                        <SelectItem value="Female">Office 2</SelectItem>
-                                        <SelectItem value="Other">Office 3</SelectItem>
-
+                                        <SelectItem value="Office1">Office 1</SelectItem>
+                                        <SelectItem value="Office2">Office 2</SelectItem>
+                                        <SelectItem value="Office3">Office 3</SelectItem>
                                     </SelectContent>
                                 </Select>
-
-                                <FormMessage />
-
-
-
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
 
+                    {/* Postal Code Field */}
                     <FormField
                         control={form.control}
                         name="postalCode"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Postal code</FormLabel>
+                                <FormLabel>Postal Code</FormLabel>
                                 <FormControl>
-                                    <Input defaultValue={addressForm.postalCode} className='w-1/2' {...field}
+                                    <Input 
+                                        className='w-1/2'
+                                        placeholder="Enter postal code" 
+                                        {...field}
                                         onChange={(e) => {
                                             field.onChange(e);
                                             setIsSubmitted(false);
                                         }}
                                     />
                                 </FormControl>
-                                {IsSubmitted && (<FormMessage />)}
-
-
-
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
 
+                    {/* Police Station Field */}
                     <FormField
                         control={form.control}
                         name="policeStation"
@@ -229,153 +219,137 @@ const Address = () => {
                                 <Select onValueChange={field.onChange} defaultValue={addressForm.policeStation}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
-                                            <SelectValue />
+                                            <SelectValue placeholder="Select a police station"/>
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-
-                                        <SelectItem value="Male">Station 1</SelectItem>
-                                        <SelectItem value="Female">Station 2</SelectItem>
-                                        <SelectItem value="Other">Station 3</SelectItem>
-
+                                        <SelectItem value="Station1">Station 1</SelectItem>
+                                        <SelectItem value="Station2">Station 2</SelectItem>
+                                        <SelectItem value="Station3">Station 3</SelectItem>
                                     </SelectContent>
                                 </Select>
-
-                                <FormMessage />
-
-
-
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
 
                     <CardDescription>Present Address</CardDescription>
-                    <CardDescription>Note: Present address is subjected to RPO/BM. The RPO will reject your application if it does not belong to their jurisdiction. Your payment for the passport may be void and is not reimbursed if the information is incorrect!</CardDescription>
+                    <CardDescription>
+                        Note: Present address is subjected to RPO/BM. The RPO will reject your application 
+                        if it does not belong to their jurisdiction. Your payment for the passport may be 
+                        void and is not reimbursed if the information is incorrect!
+                    </CardDescription>
+                    
                     <div className="space-y-1 leading-none">
                         <FormLabel>
                             Present address is the same as permanent?
                         </FormLabel>
                     </div>
-                    <div className="flex flex-col space-y-2">
+                    
+                    <div className="flex items-center space-x-8">
+                        {/* Yes Checkbox */}
+                        <FormField
+                            control={form.control}
+                            name="yes"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col items-center">
+                                    <div className="flex items-center space-x-2">
+                                        <FormLabel className="text-sm">Yes</FormLabel>
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => {
+                                                    if (checked) {
+                                                        form.setValue("yes", true);
+                                                        form.setValue("no", false);
+                                                    }
+                                                }}
+                                            />
+                                        </FormControl>
+                                    </div>
+                                    <FormMessage className="text-red-500 text-sm" />
+                                </FormItem>
+                            )}
+                        />
 
-                        <div className="flex items-center space-x-8">
-                            {/* Yes Checkbox */}
-                            <FormField
-                                control={form.control}
-                                name="yes"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col items-center">
-                                        <div className="flex items-center space-x-2">
-                                            <FormLabel className="text-sm">Yes</FormLabel>
-                                            <FormControl>
-                                                <Checkbox
-                                                    checked={yes}
-                                                    onCheckedChange={(checked) => {
-                                                        field.onChange(checked);
-                                                        form.setValue("no", !checked); // Uncheck "No" when "Yes" is selected
-                                                        setYes(true)
-                                                        setNo(false)
-                                                    }}
-                                                />
-                                            </FormControl>
-                                        </div>
-                                        <FormMessage className="text-red-500 text-sm" />
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* No Checkbox */}
-                            <FormField
-                                control={form.control}
-                                name="no"
-                                render={({ field }) => (
-                                    <FormItem className="flex flex-col items-center">
-                                        <div className="flex items-center space-x-2">
-                                            <FormLabel className="text-sm">No</FormLabel>
-                                            <FormControl>
-                                                <Checkbox
-                                                    checked={no}
-                                                    onCheckedChange={(checked) => {
-                                                        field.onChange(checked);
-                                                        form.setValue("yes", !checked); // Uncheck "Yes" when "No" is selected
-                                                        setNo(true)
-                                                        setYes(false)
-                                                    }}
-                                                />
-                                            </FormControl>
-                                        </div>
-                                        <FormMessage className="text-red-500 text-sm" />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+                        {/* No Checkbox */}
+                        <FormField
+                            control={form.control}
+                            name="no"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col items-center">
+                                    <div className="flex items-center space-x-2">
+                                        <FormLabel className="text-sm">No</FormLabel>
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => {
+                                                    if (checked) {
+                                                        form.setValue("no", true);
+                                                        form.setValue("yes", false);
+                                                    }
+                                                }}
+                                            />
+                                        </FormControl>
+                                    </div>
+                                    <FormMessage className="text-red-500 text-sm" />
+                                </FormItem>
+                            )}
+                        />
                     </div>
 
-                    
-                        
+                    {/* Conditional Present Address Fields - Only show if "No" is checked */}
+                    {showPresentAddress && (
+                        <>
+                            {/* Country Field */}
+                            <FormField
+                                control={form.control}
+                                name="country"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Select Country</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger className="w-[180px]">
+                                                    <SelectValue placeholder="Select a country"/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Bangladesh">Bangladesh</SelectItem>
+                                                <SelectItem value="India">India</SelectItem>
+                                                <SelectItem value="Pakistan">Pakistan</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        {isSubmitted && <FormMessage />}
+                                    </FormItem>
+                                )}
+                            />
 
-                   { !yes && no && ( 
-                    <>
-                    <FormField
-                        control={form.control}
-                        name="country"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Select Country</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={addressForm.country}>
-                                    <FormControl>
-                                        <SelectTrigger className="w-[180px]">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-
-                                        <SelectItem value="Bangladesh">Bangladesh</SelectItem>
-                                        <SelectItem value="India">India</SelectItem>
-                                        <SelectItem value="Pakistan">Pakistan</SelectItem>
-
-                                    </SelectContent>
-                                </Select>
-
-                                <FormMessage />
-
-
-
-                            </FormItem>
-                        )}
-                    />
-
-                    
-
+                            {/* District2 Field */}
                             <FormField
                                 control={form.control}
                                 name="district2"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Select District</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={addressForm.district2}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="w-[180px]">
-                                                    <SelectValue />
+                                                    <SelectValue placeholder="Select a district"/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-
-                                                <SelectItem value="Male">Dhaka</SelectItem>
-                                                <SelectItem value="Female">Khulna</SelectItem>
-                                                <SelectItem value="Other">Chittagong</SelectItem>
-
+                                                <SelectItem value="Dhaka">Dhaka</SelectItem>
+                                                <SelectItem value="Khulna">Khulna</SelectItem>
+                                                <SelectItem value="Chittagong">Chittagong</SelectItem>
                                             </SelectContent>
                                         </Select>
-
-                                        <FormMessage />
-
-
-
+                                        {isSubmitted && <FormMessage />}
                                     </FormItem>
                                 )}
                             />
 
+                            {/* City2 Field */}
                             <FormField
                                 control={form.control}
                                 name="city2"
@@ -383,124 +357,117 @@ const Address = () => {
                                     <FormItem>
                                         <FormLabel>City/Village/House</FormLabel>
                                         <FormControl>
-                                            <Input defaultValue={addressForm.city2} className='w-1/2' {...field}
+                                            <Input 
+                                                className='w-1/2'
+                                                placeholder="Enter city/village/house" 
+                                                {...field}
                                                 onChange={(e) => {
                                                     field.onChange(e);
                                                     setIsSubmitted(false);
                                                 }}
                                             />
                                         </FormControl>
-                                        {IsSubmitted && (<FormMessage />)}
-
-
-
+                                        {isSubmitted && <FormMessage />}
                                     </FormItem>
                                 )}
                             />
+
+                            {/* Block2 Field */}
                             <FormField
                                 control={form.control}
                                 name="block2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Road/Block/Sector(optional)</FormLabel>
+                                        <FormLabel>Road/Block/Sector</FormLabel>
                                         <FormControl>
-                                            <Input defaultValue={addressForm.block2} className='w-1/2' {...field}
+                                            <Input 
+                                                className='w-1/2'
+                                                placeholder="Enter road/block/sector" 
+                                                {...field}
                                                 onChange={(e) => {
                                                     field.onChange(e);
                                                     setIsSubmitted(false);
                                                 }}
                                             />
                                         </FormControl>
-                                        {IsSubmitted && (<FormMessage />)}
-
-
-
+                                        {isSubmitted && <FormMessage />}
                                     </FormItem>
                                 )}
                             />
 
+                            {/* Post Office2 Field */}
                             <FormField
                                 control={form.control}
                                 name="postOffice2"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Select Post Office</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={addressForm.postOffice2}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="w-[180px]">
-                                                    <SelectValue />
+                                                    <SelectValue placeholder="Select a post office"/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-
-                                                <SelectItem value="Male">Office 1</SelectItem>
-                                                <SelectItem value="Female">Office 2</SelectItem>
-                                                <SelectItem value="Other">Office 3</SelectItem>
-
+                                                <SelectItem value="Office1">Office 1</SelectItem>
+                                                <SelectItem value="Office2">Office 2</SelectItem>
+                                                <SelectItem value="Office3">Office 3</SelectItem>
                                             </SelectContent>
                                         </Select>
-
-                                        <FormMessage />
-
-
-
+                                        {isSubmitted && <FormMessage />}
                                     </FormItem>
                                 )}
                             />
 
+                            {/* Postal Code2 Field */}
                             <FormField
                                 control={form.control}
                                 name="postalCode2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Postal code</FormLabel>
+                                        <FormLabel>Postal Code</FormLabel>
                                         <FormControl>
-                                            <Input defaultValue={addressForm.postalCode2} className='w-1/2' {...field}
+                                            <Input 
+                                                className='w-1/2'
+                                                placeholder="Enter postal code" 
+                                                {...field}
                                                 onChange={(e) => {
                                                     field.onChange(e);
                                                     setIsSubmitted(false);
                                                 }}
                                             />
                                         </FormControl>
-                                        {IsSubmitted && (<FormMessage />)}
-
-
-
+                                        {isSubmitted && <FormMessage />}
                                     </FormItem>
                                 )}
                             />
 
+                            {/* Police Station2 Field */}
                             <FormField
                                 control={form.control}
                                 name="policeStation2"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Select Police Station</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={addressForm.policeStation2}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="w-[180px]">
-                                                    <SelectValue />
+                                                    <SelectValue placeholder="Select a police station"/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-
-                                                <SelectItem value="Male">Station 1</SelectItem>
-                                                <SelectItem value="Female">Station 2</SelectItem>
-                                                <SelectItem value="Other">Station 3</SelectItem>
-
+                                                <SelectItem value="Station1">Station 1</SelectItem>
+                                                <SelectItem value="Station2">Station 2</SelectItem>
+                                                <SelectItem value="Station3">Station 3</SelectItem>
                                             </SelectContent>
                                         </Select>
-
-                                        <FormMessage />
-
-
-
+                                        {isSubmitted && <FormMessage />}
                                     </FormItem>
                                 )}
                             />
-
                         </>
-                            )}
+                    )}
+
                     <CardDescription>Available Regional Passport Office and Bangladesh Mission</CardDescription>
                     <FormField
                         control={form.control}
@@ -510,7 +477,7 @@ const Address = () => {
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
-                                        defaultValue={addressForm.officeType}
+                                        value={field.value}
                                         className="flex flex-col space-y-1"
                                     >
                                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -531,17 +498,18 @@ const Address = () => {
                                         </FormItem>
                                     </RadioGroup>
                                 </FormControl>
-                                <FormMessage />
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
 
-                    
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit" onClick={() => setIsSubmitted(true)}>
+                        Save and Continue
+                    </Button>
                 </form>
             </Form>
         </div>
-    )
-}
+    );
+};
 
-export default Address
+export default Address;
