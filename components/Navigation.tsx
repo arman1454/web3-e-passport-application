@@ -16,6 +16,7 @@ import {
     NavbarMenuItem,
 } from "@heroui/react";
 import { FC } from 'react'
+import { CustomConnectButton } from "./ui/CustomConnectButton";
 // import { LuMenu } from 'next/link';
 // import NetworkSwitcher from './NetworkSwitcher';
 
@@ -106,7 +107,8 @@ const Navigation: FC = (props) => {
                     </NavbarMenuItem>
                 ))}
             </NavbarMenu>
-            <NavbarContent as="div" justify="end">
+            <NavbarContent as="div" justify="end" className="gap-6">
+                <CustomConnectButton/>
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger>
                         <Avatar

@@ -4,6 +4,10 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import { HeroProviders } from "./HeroProviders";
 import Navigation from "@/components/Navigation";
+import { WalletProviders } from "./WalletProviders";
+import { getConfig } from "./wagmi";
+import { headers } from "next/headers";
+import { cookieToInitialState } from "wagmi";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +21,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialState = cookieToInitialState(
+    getConfig(),
+    headers().get('cookie'),
+  )
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -27,8 +35,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <HeroProviders>
+            <WalletProviders initialState={initialState}>
             <Navigation/>
           {children}
+            </WalletProviders>
           </HeroProviders>
         </ThemeProvider>
       </body>
