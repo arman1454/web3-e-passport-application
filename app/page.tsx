@@ -16,6 +16,9 @@ import {
     useDisclosure,
 } from "@heroui/react";
 import { Label } from "@/components/ui/label";
+import { CustomConnectButton } from "@/components/ui/CustomConnectButton";
+import { ArrowRight, ArrowUpRight, ChevronLeft, Menu } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
     const [active, setActive] = useState("Address");
@@ -34,29 +37,48 @@ export default function Home() {
 
     return (
         <>
-            <div className="text-center p-12">
-                <Label className="lg:text-lg">Please fill in all required information step by step in each section.</Label>
+            <div className="flex flex-col items-center gap-4 text-center pb-10 pt-6 lg:p-12">
+                <div className="flex lg:hidden">
+                    <Badge variant="outline" className="bg-background text-foreground">
+                        "✨Creating your own Token"
+                        <ArrowRight className="ml-2 size-4" />
+                    </Badge>
+                <CustomConnectButton />
+                </div>
+                <Label className="lg:text-lg text-foreground">Please fill in all required information step by step in each section.</Label>
             </div>
             <div className="flex flex-col lg:flex-row items-start lg:justify-center gap-10">
-                {/* Mobile Button to Open Drawer */}
+                {/* Mobile Icon to Open Drawer */}
                 <div className="pl-12">
-                    <Button className="lg:hidden" onClick={onOpen}>Open Menu</Button>
+                    <Button 
+                        className="border border-primary bg-card text-card-foreground lg:hidden px-3 py-2 rounded-full flex items-center justify-center gap-1" 
+                        variant="outline" 
+                        onClick={onOpen}
+                        aria-label="Open navigation menu"
+                    >
+                        <ChevronLeft className="text-foreground"/>
+                        <span>Sections</span>
+                    </Button>
                 </div>
 
                 {/* Drawer for Mobile Navigation */}
                 <Drawer isOpen={isOpen} placement="left" size="xs" backdrop="blur" onOpenChange={onOpenChange}>
-                    <DrawerContent className="bg-card absolute top-1/3 transform -translate-y-1/4 h-auto max-h-[64vh] rounded-lg">
+                    <DrawerContent className="bg-card text-card-foreground absolute top-1/3 transform -translate-y-1/4 h-auto max-h-[64vh] rounded-lg">
                         {() => (
                             <>
                                 <DrawerBody className="space-y-2">
-                                    <Card className="bg-card shadow-none">
+                                    <Card className="bg-card border-border shadow-none">
                                         {items.map((item, key) => (
                                             <CardBody key={key}>
                                                 <Button
                                                     onClick={() => setActive(item.name)}
                                                     disabled={!item.status}
                                                     variant="secondary"
-                                                    className={`text-md w-full text-left ${active === item.name ? "bg-primary text-white" : "bg-transparent text-muted-foreground"}`}
+                                                    className={`text-md w-full text-left ${
+                                                        active === item.name 
+                                                            ? "bg-primary text-primary-foreground" 
+                                                            : "bg-transparent text-muted-foreground"
+                                                    }`}
                                                 >
                                                     {item.name}
                                                 </Button>
@@ -70,14 +92,18 @@ export default function Home() {
                 </Drawer>
 
                 {/* Sidebar for Larger Screens */}
-                <Card className="hidden lg:block bg-card">
+                <Card className="hidden lg:block bg-card text-card-foreground border-border">
                     {items.map((item, key) => (
                         <CardBody key={key}>
                             <Button
                                 onClick={() => setActive(item.name)}
                                 disabled={!item.status}
                                 variant="secondary"
-                                className={`w-full text-left ${active === item.name ? "bg-primary text-white" : "bg-transparent text-muted-foreground"}`}
+                                className={`w-full text-left ${
+                                    active === item.name 
+                                    ? "bg-primary text-primary-foreground hover:bg-primary" 
+                                    : "bg-transparent text-foreground hover:text-accent-foreground"
+                                }`}
                             >
                                 {item.name}
                             </Button>

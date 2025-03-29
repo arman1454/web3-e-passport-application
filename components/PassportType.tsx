@@ -52,10 +52,10 @@ const PassportType = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 bg-card rounded-lg lg:w-3/4 w-full">
+        <div className="flex flex-col gap-4 bg-card text-card-foreground rounded-lg lg:w-3/4 w-full">
             <div className="flex flex-col items-center lg:items-start gap-4 mt-4 mx-4">
-                <Label>Passport Type</Label>
-                <Label className="text-center lg:text-start">Select the Passport Type for your applications!</Label>
+                <Label className="text-foreground">Passport Type</Label>
+                <Label className="text-center lg:text-start text-muted-foreground">Select the Passport Type for your applications!</Label>
             </div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 mb-4 mx-4 flex flex-col lg:items-start items-center">
@@ -67,28 +67,39 @@ const PassportType = () => {
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
-                                        value={field.value} // ✅ Keeps Zustand in sync
+                                        value={field.value}
                                         className="flex flex-col space-y-4"
                                     >
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                             <FormControl>
-                                                <RadioGroupItem value="ordinary" />
+                                                <RadioGroupItem 
+                                                    value="ordinary" 
+                                                    className="border-input text-primary"
+                                                />
                                             </FormControl>
-                                            <FormLabel className="font-normal">Ordinary Passport</FormLabel>
+                                            <FormLabel className="font-normal text-foreground">Ordinary Passport</FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                             <FormControl>
-                                                <RadioGroupItem value="official" />
+                                                <RadioGroupItem 
+                                                    value="official" 
+                                                    className="border-input text-primary"
+                                                />
                                             </FormControl>
-                                            <FormLabel className="font-normal">Official Passport</FormLabel>
+                                            <FormLabel className="font-normal text-foreground">Official Passport</FormLabel>
                                         </FormItem>
                                     </RadioGroup>
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-destructive" />
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Submit</Button>
+                    <Button 
+                        type="submit"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                        Save and Continue
+                    </Button>
                 </form>
             </Form>
         </div>

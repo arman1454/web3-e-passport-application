@@ -103,9 +103,9 @@ const PersonalInfo = () => {
     }
 
     return (
-        <div className="bg-card px-4 lg:w-4/5">
+        <div className="bg-card text-card-foreground px-4 lg:w-4/5">
             <CardHeader>
-                <CardTitle className='text-lg'>Personal Information</CardTitle>
+                <CardTitle className='text-lg text-card-foreground'>Personal Information</CardTitle>
             </CardHeader>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
@@ -115,20 +115,20 @@ const PersonalInfo = () => {
                         name="gender"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Gender</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={personalInfoForm.gender}>
+                                <FormLabel className="text-foreground">Gender</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value || personalInfoForm.gender}>
                                     <FormControl>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-[180px] border-input">
                                             <SelectValue placeholder="Select a Gender" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="bg-popover text-popover-foreground">
                                         <SelectItem value="Male">Male</SelectItem>
                                         <SelectItem value="Female">Female</SelectItem>
                                         <SelectItem value="Other">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <FormMessage />
+                                <FormMessage className="text-destructive" />
                             </FormItem>
                         )}
                     />
@@ -407,28 +407,29 @@ const PersonalInfo = () => {
                         name="citizenType"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Select Citizenship Type</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={personalInfoForm.citizenType}>
+                                <FormLabel className="text-foreground">Citizenship Type</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value || personalInfoForm.citizenType}>
                                     <FormControl>
-                                        <SelectTrigger className="w-[180px]">
-                                            <SelectValue placeholder="Citizenship Type" />
+                                        <SelectTrigger className="w-[180px] border-input">
+                                            <SelectValue placeholder="Select Citizenship Type" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="BY BIRTH">BY BIRTH</SelectItem>
-                                        <SelectItem value="BY DECENT">BY DECENT</SelectItem>
-                                        <SelectItem value="MIGRATION">MIGRATION</SelectItem>
-                                        <SelectItem value="NATURALIZATION">NATURALIZATION</SelectItem>
-                                        <SelectItem value="BY MARRIAGE">BY MARRIAGE</SelectItem>
-                                        <SelectItem value="OTHER">OTHER</SelectItem>
+                                    <SelectContent className="bg-popover text-popover-foreground">
+                                        <SelectItem value="By Birth">By Birth</SelectItem>
+                                        <SelectItem value="By Descent">By Descent</SelectItem>
+                                        <SelectItem value="By Registration">By Registration</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <FormMessage />
+                                <FormMessage className="text-destructive" />
                             </FormItem>
                         )}
                     />
 
-                    <Button type="submit" onClick={() => setIsSubmitted(true)}>
+                    <Button 
+                        type="submit" 
+                        onClick={() => setIsSubmitted(true)}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
                         Save and Continue
                     </Button>
                 </form>

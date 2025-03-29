@@ -94,7 +94,7 @@ export const CustomConnectButton = () => {
                                         className={cn(buttonVariants({ variant: "outline", size: "default" }))}
                                     >
                                         {chain.hasIcon && (
-                                            <div className="mr-2 w-4 h-4 rounded-full overflow-hidden bg-white">
+                                            <div className="mr-2 w-4 h-4 rounded-full overflow-hidden bg-background">
                                                 {chain.iconUrl && (
                                                     <img
                                                         alt={chain.name ?? 'Chain icon'}
@@ -104,15 +104,19 @@ export const CustomConnectButton = () => {
                                                 )}
                                             </div>
                                         )}
-                                        <span>{chain.name}</span>
+                                        <span className="text-foreground">{chain.name}</span>
                                     </button>
                                     <button
                                         onClick={openAccountModal}
                                         type="button"
                                         className={cn(buttonVariants({ variant: "secondary", size: "default" }))}
                                     >
-                                        {account.displayName}
-                                        {account.displayBalance ? ` (${account.displayBalance})` : ''}
+                                        <span className="text-secondary-foreground">{account.displayName}</span>
+                                        {account.displayBalance ? 
+                                            <span className="text-secondary-foreground">
+                                                {` (${account.displayBalance})`}
+                                            </span> 
+                                            : ''}
                                     </button>
                                 </div>
                             );

@@ -17,6 +17,7 @@ import {
 } from "@heroui/react";
 import { FC } from 'react'
 import { CustomConnectButton } from "./ui/CustomConnectButton";
+import { Toggle } from "./Toggle";
 // import { LuMenu } from 'next/link';
 // import NetworkSwitcher from './NetworkSwitcher';
 
@@ -65,32 +66,25 @@ const Navigation: FC = (props) => {
 
     return (
         <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-card">
-            <NavbarContent>
+            <NavbarContent className="flex gap-12">
                 <NavbarMenuToggle
                     aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                     className="sm:hidden"
                 />
                 <NavbarBrand>
                     <AcmeLogo />
-                    <p className="font-bold text-[#a79255]">e-passport</p>
+                    <p className="font-bold text-muted-foreground">e-passport</p>
                 </NavbarBrand>
             </NavbarContent>
-
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
-
                 {menuItems.map((list, index) => (
                     <NavbarItem key={index} >
-                        <Link color="foreground" href={list.link} className="text-transparent bg-gradient-to-r from-[#C4A44D] via-[#f7f595] to-[#C4A44D] bg-clip-text">
+                        <Link color="foreground" href={list.link}>
                             {list.name}
                         </Link>
                     </NavbarItem>
                 ))}
             </NavbarContent>
-            {/* <NavbarContent justify="end">
-                <NavbarItem className="w-1/2">
-                    <NetworkSwitcher />
-                </NavbarItem>
-            </NavbarContent> */}
             <NavbarMenu>
                 {menuItems.map((item, index) => (
                     <NavbarMenuItem key={`${item}-${index}`}>
@@ -107,8 +101,11 @@ const Navigation: FC = (props) => {
                     </NavbarMenuItem>
                 ))}
             </NavbarMenu>
+            <div className="hidden lg:flex">
+            <CustomConnectButton/>
+            </div>
             <NavbarContent as="div" justify="end" className="gap-6">
-                <CustomConnectButton/>
+                <Toggle/>
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger>
                         <Avatar

@@ -85,11 +85,11 @@ const Address = () => {
     }
 
     return (
-        <div className='px-4 bg-card flex flex-col gap-4 lg:w-4/5'>
+        <div className='px-4 bg-card text-card-foreground flex flex-col gap-4 lg:w-4/5'>
             <CardHeader className='pb-2'>
-                <CardTitle className='text-lg'>Address</CardTitle>
+                <CardTitle className='text-lg text-card-foreground'>Address</CardTitle>
             </CardHeader>
-            <CardDescription>Permanent Address</CardDescription>
+            <CardDescription className="text-muted-foreground">Permanent Address</CardDescription>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     {/* District Field */}
@@ -98,20 +98,20 @@ const Address = () => {
                         name="district"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Select District</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={addressForm.district}>
+                                <FormLabel className="text-foreground">Select District</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-[180px] border-input">
                                             <SelectValue placeholder="Select a district"/>
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="bg-popover text-popover-foreground">
                                         <SelectItem value="Dhaka">Dhaka</SelectItem>
                                         <SelectItem value="Khulna">Khulna</SelectItem>
                                         <SelectItem value="Chittagong">Chittagong</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {isSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage className="text-destructive" />}
                             </FormItem>
                         )}
                     />
@@ -122,7 +122,7 @@ const Address = () => {
                         name="city"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>City/Village/House</FormLabel>
+                                <FormLabel className="text-foreground">City/Village/House</FormLabel>
                                 <FormControl>
                                     <Input 
                                         className='w-1/2'
@@ -134,7 +134,7 @@ const Address = () => {
                                         }}
                                     />
                                 </FormControl>
-                                {isSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage className="text-destructive" />}
                             </FormItem>
                         )}
                     />
@@ -145,7 +145,7 @@ const Address = () => {
                         name="block"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Road/Block/Sector</FormLabel>
+                                <FormLabel className="text-foreground">Road/Block/Sector</FormLabel>
                                 <FormControl>
                                     <Input 
                                         className='w-1/2'
@@ -157,7 +157,7 @@ const Address = () => {
                                         }}
                                     />
                                 </FormControl>
-                                {isSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage className="text-destructive" />}
                             </FormItem>
                         )}
                     />
@@ -168,20 +168,20 @@ const Address = () => {
                         name="postOffice"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Select Post Office</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={addressForm.postOffice}>
+                                <FormLabel className="text-foreground">Select Post Office</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-[180px] border-input">
                                             <SelectValue placeholder="Select a post office"/>
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="bg-popover text-popover-foreground">
                                         <SelectItem value="Office1">Office 1</SelectItem>
                                         <SelectItem value="Office2">Office 2</SelectItem>
                                         <SelectItem value="Office3">Office 3</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {isSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage className="text-destructive" />}
                             </FormItem>
                         )}
                     />
@@ -192,7 +192,7 @@ const Address = () => {
                         name="postalCode"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Postal Code</FormLabel>
+                                <FormLabel className="text-foreground">Postal Code</FormLabel>
                                 <FormControl>
                                     <Input 
                                         className='w-1/2'
@@ -204,7 +204,7 @@ const Address = () => {
                                         }}
                                     />
                                 </FormControl>
-                                {isSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage className="text-destructive" />}
                             </FormItem>
                         )}
                     />
@@ -215,33 +215,33 @@ const Address = () => {
                         name="policeStation"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Select Police Station</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={addressForm.policeStation}>
+                                <FormLabel className="text-foreground">Select Police Station</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
-                                        <SelectTrigger className="w-[180px]">
+                                        <SelectTrigger className="w-[180px] border-input">
                                             <SelectValue placeholder="Select a police station"/>
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="bg-popover text-popover-foreground">
                                         <SelectItem value="Station1">Station 1</SelectItem>
                                         <SelectItem value="Station2">Station 2</SelectItem>
                                         <SelectItem value="Station3">Station 3</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {isSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage className="text-destructive" />}
                             </FormItem>
                         )}
                     />
 
-                    <CardDescription>Present Address</CardDescription>
-                    <CardDescription>
+                    <CardDescription className="text-muted-foreground">Present Address</CardDescription>
+                    <CardDescription className="text-muted-foreground">
                         Note: Present address is subjected to RPO/BM. The RPO will reject your application 
                         if it does not belong to their jurisdiction. Your payment for the passport may be 
                         void and is not reimbursed if the information is incorrect!
                     </CardDescription>
                     
                     <div className="space-y-1 leading-none">
-                        <FormLabel>
+                        <FormLabel className="text-foreground">
                             Present address is the same as permanent?
                         </FormLabel>
                     </div>
@@ -254,7 +254,7 @@ const Address = () => {
                             render={({ field }) => (
                                 <FormItem className="flex flex-col items-center">
                                     <div className="flex items-center space-x-2">
-                                        <FormLabel className="text-sm">Yes</FormLabel>
+                                        <FormLabel className="text-sm text-foreground">Yes</FormLabel>
                                         <FormControl>
                                             <Checkbox
                                                 checked={field.value}
@@ -264,10 +264,11 @@ const Address = () => {
                                                         form.setValue("no", false);
                                                     }
                                                 }}
+                                                className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                                             />
                                         </FormControl>
                                     </div>
-                                    <FormMessage className="text-red-500 text-sm" />
+                                    <FormMessage className="text-destructive text-sm" />
                                 </FormItem>
                             )}
                         />
@@ -279,7 +280,7 @@ const Address = () => {
                             render={({ field }) => (
                                 <FormItem className="flex flex-col items-center">
                                     <div className="flex items-center space-x-2">
-                                        <FormLabel className="text-sm">No</FormLabel>
+                                        <FormLabel className="text-sm text-foreground">No</FormLabel>
                                         <FormControl>
                                             <Checkbox
                                                 checked={field.value}
@@ -289,10 +290,11 @@ const Address = () => {
                                                         form.setValue("yes", false);
                                                     }
                                                 }}
+                                                className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                                             />
                                         </FormControl>
                                     </div>
-                                    <FormMessage className="text-red-500 text-sm" />
+                                    <FormMessage className="text-destructive text-sm" />
                                 </FormItem>
                             )}
                         />
@@ -307,20 +309,20 @@ const Address = () => {
                                 name="country"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Select Country</FormLabel>
+                                        <FormLabel className="text-foreground">Select Country</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
-                                                <SelectTrigger className="w-[180px]">
+                                                <SelectTrigger className="w-[180px] border-input">
                                                     <SelectValue placeholder="Select a country"/>
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className="bg-popover text-popover-foreground">
                                                 <SelectItem value="Bangladesh">Bangladesh</SelectItem>
                                                 <SelectItem value="India">India</SelectItem>
                                                 <SelectItem value="Pakistan">Pakistan</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        {isSubmitted && <FormMessage />}
+                                        {isSubmitted && <FormMessage className="text-destructive" />}
                                     </FormItem>
                                 )}
                             />
@@ -331,20 +333,20 @@ const Address = () => {
                                 name="district2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Select District</FormLabel>
+                                        <FormLabel className="text-foreground">Select District</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
-                                                <SelectTrigger className="w-[180px]">
+                                                <SelectTrigger className="w-[180px] border-input">
                                                     <SelectValue placeholder="Select a district"/>
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className="bg-popover text-popover-foreground">
                                                 <SelectItem value="Dhaka">Dhaka</SelectItem>
                                                 <SelectItem value="Khulna">Khulna</SelectItem>
                                                 <SelectItem value="Chittagong">Chittagong</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        {isSubmitted && <FormMessage />}
+                                        {isSubmitted && <FormMessage className="text-destructive" />}
                                     </FormItem>
                                 )}
                             />
@@ -355,7 +357,7 @@ const Address = () => {
                                 name="city2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>City/Village/House</FormLabel>
+                                        <FormLabel className="text-foreground">City/Village/House</FormLabel>
                                         <FormControl>
                                             <Input 
                                                 className='w-1/2'
@@ -367,7 +369,7 @@ const Address = () => {
                                                 }}
                                             />
                                         </FormControl>
-                                        {isSubmitted && <FormMessage />}
+                                        {isSubmitted && <FormMessage className="text-destructive" />}
                                     </FormItem>
                                 )}
                             />
@@ -378,7 +380,7 @@ const Address = () => {
                                 name="block2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Road/Block/Sector</FormLabel>
+                                        <FormLabel className="text-foreground">Road/Block/Sector</FormLabel>
                                         <FormControl>
                                             <Input 
                                                 className='w-1/2'
@@ -390,7 +392,7 @@ const Address = () => {
                                                 }}
                                             />
                                         </FormControl>
-                                        {isSubmitted && <FormMessage />}
+                                        {isSubmitted && <FormMessage className="text-destructive" />}
                                     </FormItem>
                                 )}
                             />
@@ -401,20 +403,20 @@ const Address = () => {
                                 name="postOffice2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Select Post Office</FormLabel>
+                                        <FormLabel className="text-foreground">Select Post Office</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
-                                                <SelectTrigger className="w-[180px]">
+                                                <SelectTrigger className="w-[180px] border-input">
                                                     <SelectValue placeholder="Select a post office"/>
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className="bg-popover text-popover-foreground">
                                                 <SelectItem value="Office1">Office 1</SelectItem>
                                                 <SelectItem value="Office2">Office 2</SelectItem>
                                                 <SelectItem value="Office3">Office 3</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        {isSubmitted && <FormMessage />}
+                                        {isSubmitted && <FormMessage className="text-destructive" />}
                                     </FormItem>
                                 )}
                             />
@@ -425,7 +427,7 @@ const Address = () => {
                                 name="postalCode2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Postal Code</FormLabel>
+                                        <FormLabel className="text-foreground">Postal Code</FormLabel>
                                         <FormControl>
                                             <Input 
                                                 className='w-1/2'
@@ -437,7 +439,7 @@ const Address = () => {
                                                 }}
                                             />
                                         </FormControl>
-                                        {isSubmitted && <FormMessage />}
+                                        {isSubmitted && <FormMessage className="text-destructive" />}
                                     </FormItem>
                                 )}
                             />
@@ -448,27 +450,27 @@ const Address = () => {
                                 name="policeStation2"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Select Police Station</FormLabel>
+                                        <FormLabel className="text-foreground">Select Police Station</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
-                                                <SelectTrigger className="w-[180px]">
+                                                <SelectTrigger className="w-[180px] border-input">
                                                     <SelectValue placeholder="Select a police station"/>
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent>
+                                            <SelectContent className="bg-popover text-popover-foreground">
                                                 <SelectItem value="Station1">Station 1</SelectItem>
                                                 <SelectItem value="Station2">Station 2</SelectItem>
                                                 <SelectItem value="Station3">Station 3</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        {isSubmitted && <FormMessage />}
+                                        {isSubmitted && <FormMessage className="text-destructive" />}
                                     </FormItem>
                                 )}
                             />
                         </>
                     )}
 
-                    <CardDescription>Available Regional Passport Office and Bangladesh Mission</CardDescription>
+                    <CardDescription className="text-muted-foreground">Available Regional Passport Office and Bangladesh Mission</CardDescription>
                     <FormField
                         control={form.control}
                         name="officeType"
@@ -484,7 +486,7 @@ const Address = () => {
                                             <FormControl>
                                                 <RadioGroupItem value="Regional Passport Office (RPO)" />
                                             </FormControl>
-                                            <FormLabel className="font-normal">
+                                            <FormLabel className="font-normal text-foreground">
                                                 Regional Passport Office (RPO)
                                             </FormLabel>
                                         </FormItem>
@@ -492,18 +494,22 @@ const Address = () => {
                                             <FormControl>
                                                 <RadioGroupItem value="Bangladesh Mission" disabled/>
                                             </FormControl>
-                                            <FormLabel className="font-normal">
+                                            <FormLabel className="font-normal text-foreground">
                                                 Bangladesh Mission
                                             </FormLabel>
                                         </FormItem>
                                     </RadioGroup>
                                 </FormControl>
-                                {isSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage className="text-destructive" />}
                             </FormItem>
                         )}
                     />
 
-                    <Button type="submit" onClick={() => setIsSubmitted(true)}>
+                    <Button 
+                        type="submit" 
+                        onClick={() => setIsSubmitted(true)}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
                         Save and Continue
                     </Button>
                 </form>
