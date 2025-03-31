@@ -85,7 +85,7 @@ const Address = () => {
     }
 
     return (
-        <div className='px-4 bg-card text-card-foreground flex flex-col gap-4 lg:w-4/5'>
+        <div className='px-4 bg-card text-card-foreground flex flex-col gap-4 lg:w-4/5 shadow-small rounded-large'>
             <CardHeader className='pb-2'>
                 <CardTitle className='text-lg text-card-foreground'>Address</CardTitle>
             </CardHeader>
@@ -264,7 +264,7 @@ const Address = () => {
                                                         form.setValue("no", false);
                                                     }
                                                 }}
-                                                className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                                                className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                                             />
                                         </FormControl>
                                     </div>
@@ -290,7 +290,7 @@ const Address = () => {
                                                         form.setValue("yes", false);
                                                     }
                                                 }}
-                                                className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                                                className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                                             />
                                         </FormControl>
                                     </div>
@@ -508,7 +508,7 @@ const Address = () => {
                     <Button 
                         type="submit" 
                         onClick={() => setIsSubmitted(true)}
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                        variant="default"
                     >
                         Save and Continue
                     </Button>

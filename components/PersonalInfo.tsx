@@ -103,7 +103,7 @@ const PersonalInfo = () => {
     }
 
     return (
-        <div className="bg-card text-card-foreground px-4 lg:w-4/5">
+        <div className="bg-card text-card-foreground px-4 lg:w-4/5 shadow-small rounded-large">
             <CardHeader>
                 <CardTitle className='text-lg text-card-foreground'>Personal Information</CardTitle>
             </CardHeader>

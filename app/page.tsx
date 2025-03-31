@@ -21,7 +21,7 @@ import { ArrowRight, ArrowUpRight, ChevronLeft, Menu } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
-    const [active, setActive] = useState("Address");
+    const [active, setActive] = useState("Passport Type");
     const items = [
         { name: "Passport Type", status: true },
         { name: "Personal Information", status: true },
@@ -37,26 +37,34 @@ export default function Home() {
 
     return (
         <>
-            <div className="flex flex-col items-center gap-4 text-center pb-10 pt-6 lg:p-12">
-                <div className="flex lg:hidden">
+            <div className="flex flex-col items-center gap-4 text-center pb-8 pt-6 lg:p-10">
+                <div className="pt-4 flex lg:hidden">
                     <Badge variant="outline" className="bg-background text-foreground">
                         "✨Creating your own Token"
                         <ArrowRight className="ml-2 size-4" />
                     </Badge>
-                <CustomConnectButton />
+                    <CustomConnectButton />
                 </div>
-                <Label className="lg:text-lg text-foreground">Please fill in all required information step by step in each section.</Label>
+                <div className="pt-8 lg:pt-0 w-11/12 sm:w-full">
+                    <Label className="lg:text-lg text-foreground font-sans">Please fill in all required information step by step in each section.</Label>
+                </div>
+                {/* <div className="w-5/12 rounded-full bg-primary p-0.5">
+                        <div className="rounded-full flex w-full items-center justify-center bg-card back">
+                        <Label className="text-sm md:text-md lg:text-lg text-foreground font-sans">Please fill in all the required information step by step in each section</Label>
+                        </div>
+                    </div> */}
+
             </div>
             <div className="flex flex-col lg:flex-row items-start lg:justify-center gap-10">
                 {/* Mobile Icon to Open Drawer */}
                 <div className="pl-12">
-                    <Button 
-                        className="border border-primary bg-card text-card-foreground lg:hidden px-3 py-2 rounded-full flex items-center justify-center gap-1" 
-                        variant="outline" 
+                    <Button
+                        className="border border-primary bg-card text-card-foreground lg:hidden px-3 py-2 rounded-full flex items-center justify-center gap-1"
+                        variant="outline"
                         onClick={onOpen}
                         aria-label="Open navigation menu"
                     >
-                        <ChevronLeft className="text-foreground"/>
+                        <ChevronLeft className="text-foreground" />
                         <span>Sections</span>
                     </Button>
                 </div>
@@ -74,11 +82,10 @@ export default function Home() {
                                                     onClick={() => setActive(item.name)}
                                                     disabled={!item.status}
                                                     variant="secondary"
-                                                    className={`text-md w-full text-left ${
-                                                        active === item.name 
-                                                            ? "bg-primary text-primary-foreground" 
+                                                    className={`text-md w-full text-left ${active === item.name
+                                                            ? "bg-primary text-primary-foreground"
                                                             : "bg-transparent text-muted-foreground"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {item.name}
                                                 </Button>
@@ -92,18 +99,17 @@ export default function Home() {
                 </Drawer>
 
                 {/* Sidebar for Larger Screens */}
-                <Card className="hidden lg:block bg-card text-card-foreground border-border">
+                <Card className="hidden lg:block bg-card text-card-foreground border-border top-2">
                     {items.map((item, key) => (
                         <CardBody key={key}>
                             <Button
                                 onClick={() => setActive(item.name)}
                                 disabled={!item.status}
                                 variant="secondary"
-                                className={`w-full text-left ${
-                                    active === item.name 
-                                    ? "bg-primary text-primary-foreground hover:bg-primary" 
-                                    : "bg-transparent text-foreground hover:text-accent-foreground"
-                                }`}
+                                className={`w-full text-left ${active === item.name
+                                        ? "bg-primary text-primary-foreground hover:bg-primary"
+                                        : "bg-transparent text-foreground hover:text-accent-foreground"
+                                    }`}
                             >
                                 {item.name}
                             </Button>
@@ -112,7 +118,7 @@ export default function Home() {
                 </Card>
 
                 {/* Content Section */}
-                <div className="w-full lg:w-1/2 px-12 lg:px-4 overflow-hidden">
+                <div className="w-full lg:w-1/2 px-12 lg:px-4 overflow-hidden lg:py-2">
                     {active === "Passport Type" ? <PassportType /> :
                         active === "Personal Information" ? <PersonalInfo /> :
                             active === "Address" ? <Address /> :

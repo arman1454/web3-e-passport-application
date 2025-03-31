@@ -52,7 +52,7 @@ const PassportType = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 bg-card text-card-foreground rounded-lg lg:w-3/4 w-full">
+        <div className="flex flex-col gap-4 bg-card text-card-foreground rounded-large lg:w-3/4 w-full shadow-small">
             <div className="flex flex-col items-center lg:items-start gap-4 mt-4 mx-4">
                 <Label className="text-foreground">Passport Type</Label>
                 <Label className="text-center lg:text-start text-muted-foreground">Select the Passport Type for your applications!</Label>
@@ -72,19 +72,13 @@ const PassportType = () => {
                                     >
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                             <FormControl>
-                                                <RadioGroupItem 
-                                                    value="ordinary" 
-                                                    className="border-input text-primary"
-                                                />
+                                                <RadioGroupItem value="ordinary"/>
                                             </FormControl>
                                             <FormLabel className="font-normal text-foreground">Ordinary Passport</FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                             <FormControl>
-                                                <RadioGroupItem 
-                                                    value="official" 
-                                                    className="border-input text-primary"
-                                                />
+                                                <RadioGroupItem value="official" />
                                             </FormControl>
                                             <FormLabel className="font-normal text-foreground">Official Passport</FormLabel>
                                         </FormItem>
@@ -96,7 +90,7 @@ const PassportType = () => {
                     />
                     <Button 
                         type="submit"
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                        variant="default"
                     >
                         Save and Continue
                     </Button>
