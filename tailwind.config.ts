@@ -1,5 +1,6 @@
 import { heroui } from '@heroui/theme';
 import type { Config } from "tailwindcss";
+import plugin from 'tailwindcss/plugin';
 
 const config = {
 	darkMode: ["class"],
@@ -28,7 +29,8 @@ const config = {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'transparent', // Use gradient via bg-primary
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					border: 'hsl(var(--primary-border))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -65,6 +67,9 @@ const config = {
 			backgroundImage: {
 				'primary': 'var(--primary)', // This enables gradients dynamically
 			},
+			borderColor: {
+				'primary': 'hsl(var(--primary-border))'
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -86,7 +91,10 @@ const config = {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate"), heroui()],
+	plugins: [
+		require("tailwindcss-animate"), 
+		heroui(),
+	],
 } satisfies Config;
 
 export default config;

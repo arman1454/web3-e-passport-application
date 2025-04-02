@@ -13,11 +13,12 @@
     --popover-foreground: 240 10% 3.9%;
     --primary: linear-gradient(to top, #3f3f46, #18181b);
     --primary-foreground: 355.7 100% 97.3%;
+    --primary-border: 240 5.9% 10%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
+    --accent: 204 0% 81%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -41,6 +42,7 @@
     --popover-foreground: 0 0% 95%;
     --primary: linear-gradient(to top, #22c55e, #166534);
     --primary-foreground: 0 0% 95%;
+    --primary-border: 142.4 71.8% 29.2%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 15%;
@@ -69,3 +71,41 @@
       @apply bg-background text-foreground;
     }
   }
+
+/* Sidebar Button Hover Effects 
+.bg-transparent.text-foreground:hover {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Enhanced sidebar button hover for light theme 
+:root button.bg-transparent.text-foreground:hover {
+  background-color: hsl(240, 5.9%, 85%) !important; /* Lighter visible background in light mode 
+  color: hsl(240, 10%, 3.9%) !important; /* Darker text for contrast 
+  font-weight: 500;
+}
+
+/* Dark theme hover stays the same 
+.dark button.bg-transparent.text-foreground:hover {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Primary Button Hover Effect 
+.bg-primary:hover {
+  opacity: 0.9;
+}
+
+/* Active sidebar button hover effect should stay the same 
+button.bg-primary.text-primary-foreground:hover {
+  opacity: 0.9 !important;
+  background-image: var(--primary) !important;
+}
+
+/* Better RainbowKit button hover states in light mode 
+[data-rk] button:hover {
+  opacity: 0.9;
+}
+
+*/
+

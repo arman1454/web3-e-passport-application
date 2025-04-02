@@ -13,9 +13,9 @@ const buttonVariants = cva(
                 destructive:
                     "bg-destructive text-destructive-foreground hover:bg-destructive/90",
                 outline:
-                    "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                    "border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md",
                 secondary:
-                    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+                    "bg-background text-secondary-foreground hover:bg-secondary/80 rounded-md",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
             },
@@ -94,7 +94,7 @@ export const CustomConnectButton = () => {
                                         className={cn(buttonVariants({ variant: "outline", size: "default" }))}
                                     >
                                         {chain.hasIcon && (
-                                            <div className="mr-2 w-4 h-4 rounded-full overflow-hidden bg-background">
+                                            <div className="mr-2 w-4 h-4 rounded-full overflow-hidden">
                                                 {chain.iconUrl && (
                                                     <img
                                                         alt={chain.name ?? 'Chain icon'}

@@ -21,7 +21,7 @@ import { ArrowRight, ArrowUpRight, ChevronLeft, Menu } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
-    const [active, setActive] = useState("Passport Type");
+    const [active, setActive] = useState("Personal Information");
     const items = [
         { name: "Passport Type", status: true },
         { name: "Personal Information", status: true },
@@ -105,11 +105,7 @@ export default function Home() {
                             <Button
                                 onClick={() => setActive(item.name)}
                                 disabled={!item.status}
-                                variant="secondary"
-                                className={`w-full text-left ${active === item.name
-                                        ? "bg-primary text-primary-foreground hover:bg-primary"
-                                        : "bg-transparent text-foreground hover:text-accent-foreground"
-                                    }`}
+                                variant={active==item.name?"default":"ghost"}
                             >
                                 {item.name}
                             </Button>
