@@ -20,7 +20,12 @@ import { CardHeader, CardTitle } from './ui/card';
 // Type for form values with nullable birthDate
 type FormValues = z.infer<typeof personalInfoFormSchema>;
 
-const PersonalInfo = () => {
+// Add these lines at the beginning of the component
+interface PersonalInfoProps {
+    goToNextForm: () => void;
+}
+
+const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
     const personalInfoForm = useFormStore((state) => state.formData.personalInfo) as PersonalInfo_Inf;
     const updateFormData = useFormStore((state) => state.updateFormData);
     const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
@@ -28,8 +33,6 @@ const PersonalInfo = () => {
     const [isOpen, setIsOpen] = useState(false);
     // Reference to track the previous country code for comparison
     const prevCountryCodeRef = useRef<string | null>(null);
-    // Flag to track if country code was changed by user action
-    const isUserChange = useRef(false);
     
     // Use the values from the store with proper typing
     const form = useForm<FormValues>({
@@ -46,21 +49,25 @@ const PersonalInfo = () => {
     // Watch the `countryCode` field
     const selectedCountryCode = form.watch('countryCode');
     
-    // Effect to update the mobile number field ONLY when country code is changed by user
+    // Effect to update the mobile number field when country code changes
     useEffect(() => {
         // Skip if there's no country code selected yet
         if (!selectedCountryCode) return;
         
-        // Skip if this is the initial setting (from store/hydration)
-        if (prevCountryCodeRef.current === null) {
-            prevCountryCodeRef.current = selectedCountryCode;
-            return;
-        }
+        // Skip if the previous value is the same (no change)
+        if (prevCountryCodeRef.current === selectedCountryCode) return;
         
-        // Only run when the country code changes AND it's a user-initiated change
-        if (selectedCountryCode !== prevCountryCodeRef.current && isUserChange.current) {
-            // Extract the country code (e.g., "+880" from "BANGLADESH +880")
-            const code = selectedCountryCode.split(' ').pop() || '';
+        // Extract the country code (e.g., "+880" from "BANGLADESH +880")
+        const code = selectedCountryCode.split(' ').pop() || '';
+        
+        // Only update if mobile is empty or starts with a previous code
+        const currentMobile = form.getValues('mobileNo') || '';
+        const shouldUpdate = 
+            currentMobile === '' || 
+            (prevCountryCodeRef.current && 
+             currentMobile.startsWith(prevCountryCodeRef.current.split(' ').pop() || ''));
+        
+        if (shouldUpdate) {
             // Update the mobile number to just the country code
             form.setValue('mobileNo', code);
         }
@@ -87,15 +94,16 @@ const PersonalInfo = () => {
                 ...personalInfoForm,
                 birthDate: birthDate as FormValues['birthDate']
             });
-            
-            // Reset the user change flag after form rehydration
-            isUserChange.current = false;
         }
     }, [hydrated, personalInfoForm, form]);
 
+    // Submit handler
     function onSubmit(values: FormValues) {
         console.log(values);
         updateFormData('personalInfo', values);
+        
+        // After saving the data, navigate to the next form
+        goToNextForm();
     }
 
     if (!hydrated) {
@@ -260,8 +268,6 @@ const PersonalInfo = () => {
                                 <FormLabel>Country Code</FormLabel>
                                 <Select 
                                     onValueChange={(value) => {
-                                        // Set the flag indicating this is a user-initiated change
-                                        isUserChange.current = true;
                                         field.onChange(value);
                                     }} 
                                     defaultValue={personalInfoForm.countryCode}

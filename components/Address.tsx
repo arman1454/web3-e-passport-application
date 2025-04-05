@@ -25,7 +25,12 @@ type FormValues = Omit<z.infer<typeof addressFormSchema>, 'officeType'> & {
     officeType: "Regional Passport Office (RPO)" | "Bangladesh Mission";
 };
 
-const Address = () => {
+// Add these lines at the top of the component definition
+interface AddressProps {
+    goToNextForm: () => void;
+}
+
+const Address = ({ goToNextForm }: AddressProps) => {
     const addressForm = useFormStore((state) => state.formData.address) as Address_Inf;
     const updateFormData = useFormStore((state) => state.updateFormData);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -60,24 +65,11 @@ const Address = () => {
     }, [hydrated, addressForm, form]);
 
     function onSubmit(values: FormValues) {
-        let updatedValues = { ...values };
-        console.log(values);
+        console.log('🚀 ~ values:', values);
+        updateFormData('address', values);
         
-        // If "Yes" is selected, copy permanent address values to present address
-        if (values.yes) {
-            updatedValues = {
-                ...values,
-                country: "Bangladesh", // Default to Bangladesh
-                district2: values.district,
-                city2: values.city,
-                block2: values.block,
-                postOffice2: values.postOffice,
-                postalCode2: values.postalCode,
-                policeStation2: values.policeStation
-            };
-        }
-        
-        updateFormData("address", updatedValues);
+        // After saving data, navigate to the next form
+        goToNextForm();
     }
 
     if (!hydrated) {

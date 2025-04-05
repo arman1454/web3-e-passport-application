@@ -21,7 +21,12 @@ import { useFormStore } from "@/app/store";
 import { passportTypeFormSchema } from "@/app/UI_Schemas";
 import { PassportType_Inf } from "@/app/store";
 
-const PassportType = () => {
+// Add prop interface
+interface PassportTypeProps {
+    goToNextForm: () => void;
+}
+
+const PassportType = ({ goToNextForm }: PassportTypeProps) => {
     const passportTypeForm = useFormStore((state) => state.formData.passportType) as PassportType_Inf;
     const updateFormData = useFormStore((state) => state.updateFormData);
 
@@ -45,6 +50,9 @@ const PassportType = () => {
     function onSubmit(data: z.infer<typeof passportTypeFormSchema>) {
         console.log(data.type);
         updateFormData("passportType", { type: data.type });
+        
+        // After saving data, move to the next form
+        goToNextForm();
     }
 
     if (!hydrated) {

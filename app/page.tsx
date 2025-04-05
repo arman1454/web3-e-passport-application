@@ -5,7 +5,7 @@ import ID_Documents from "@/components/ID_Documents";
 import PassportType from "@/components/PassportType";
 import PersonalInfo from "@/components/PersonalInfo";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardBody } from "@heroui/react";
 import {
     Drawer,
@@ -19,21 +19,83 @@ import { Label } from "@/components/ui/label";
 import { CustomConnectButton } from "@/components/ui/CustomConnectButton";
 import { ArrowRight, ArrowUpRight, ChevronLeft, Menu } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useFormStore, FormStatus } from "@/app/store";
+
+// Define the form item structure
+const formNames = [
+    "Passport Type",
+    "Personal Information",
+    "Address",
+    "ID Documents",
+    "Parental Information",
+    "Spouse Information",
+    "Emergency Contact",
+    "Passport Options",
+    "Delivery Options and Appointment",
+];
 
 export default function Home() {
-    const [active, setActive] = useState("Personal Information");
-    const items = [
-        { name: "Passport Type", status: true },
-        { name: "Personal Information", status: true },
-        { name: "Address", status: true },
-        { name: "ID Documents", status: false },
-        { name: "Parental Information", status: false },
-        { name: "Spouse Information", status: false },
-        { name: "Emergency Contact", status: false },
-        { name: "Passport Options", status: false },
-        { name: "Delivery Options and Appointment", status: false },
-    ];
+    // Get formStatus from the store
+    const formStatus = useFormStore((state) => state.formStatus);
+    const updateFormStatus = useFormStore((state) => state.updateFormStatus);
+    
+    // Create derived items array from formStatus
+    const items = formNames.map(name => ({
+        name,
+        status: formStatus[name as keyof FormStatus]
+    }));
+
+    const [index, setIndex] = useState(0);
+    const [active, setActive] = useState(items[index].name);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    // Modified goToNextForm function with direct navigation approach
+    const goToNextFormAndNavigate = (currentIndex: number) => {
+        console.log(`Processing navigation from form ${currentIndex}`);
+        
+        // Make sure we don't go out of bounds
+        if (currentIndex + 1 < formNames.length) {
+            const nextFormName = formNames[currentIndex + 1] as keyof FormStatus;
+            
+            // Update the store
+            updateFormStatus(nextFormName, true);
+            
+            console.log(`Enabled form: ${nextFormName}, now navigating...`);
+            
+            // Force update before navigation
+            // This bypasses the need to wait for React to re-render with updated formStatus
+            setTimeout(() => {
+                // Direct manipulation of index to force navigation
+                setIndex(currentIndex + 1);
+            }, 100);
+        }
+    };
+
+    // Update active state whenever index changes
+    useEffect(() => {
+        if (formNames[index]) {
+            setActive(formNames[index]);
+            console.log(`Set active to: ${formNames[index]}`);
+        }
+    }, [index]);
+
+    // Debug: Watch for changes in formStatus
+    useEffect(() => {
+        console.log("Form status updated:", formStatus);
+    }, [formStatus]);
+
+    // Handle sidebar button click with validation
+    const handleSidebarClick = (key: number) => {
+        // Check if the tab is enabled before navigating
+        if (key < items.length && items[key].status) {
+            console.log(`Navigating to form ${key}: ${items[key].name}, status: ${items[key].status}`);
+            setIndex(key);
+            // setActive is handled by the useEffect
+        } else {
+            console.log(`Cannot navigate to form ${key}: ${items[key]?.name}, status: ${items[key]?.status}`);
+            // You could add a toast notification here
+        }
+    };
 
     return (
         <>
@@ -48,11 +110,6 @@ export default function Home() {
                 <div className="pt-8 lg:pt-0 w-11/12 sm:w-full">
                     <Label className="lg:text-lg text-foreground font-sans">Please fill in all required information step by step in each section.</Label>
                 </div>
-                {/* <div className="w-5/12 rounded-full bg-primary p-0.5">
-                        <div className="rounded-full flex w-full items-center justify-center bg-card back">
-                        <Label className="text-sm md:text-md lg:text-lg text-foreground font-sans">Please fill in all the required information step by step in each section</Label>
-                        </div>
-                    </div> */}
 
             </div>
             <div className="flex flex-col lg:flex-row items-start lg:justify-center gap-10">
@@ -79,13 +136,9 @@ export default function Home() {
                                         {items.map((item, key) => (
                                             <CardBody key={key}>
                                                 <Button
-                                                    onClick={() => setActive(item.name)}
+                                                    onClick={() => handleSidebarClick(key)}
                                                     disabled={!item.status}
-                                                    variant="secondary"
-                                                    className={`text-md w-full text-left ${active === item.name
-                                                            ? "bg-primary text-primary-foreground"
-                                                            : "bg-transparent text-muted-foreground"
-                                                        }`}
+                                                    variant={active === item.name ? "default" : "ghost"}
                                                 >
                                                     {item.name}
                                                 </Button>
@@ -103,9 +156,9 @@ export default function Home() {
                     {items.map((item, key) => (
                         <CardBody key={key}>
                             <Button
-                                onClick={() => setActive(item.name)}
+                                onClick={() => handleSidebarClick(key)}
                                 disabled={!item.status}
-                                variant={active==item.name?"default":"ghost"}
+                                variant={active === item.name ? "default" : "ghost"}
                             >
                                 {item.name}
                             </Button>
@@ -115,10 +168,30 @@ export default function Home() {
 
                 {/* Content Section */}
                 <div className="w-full lg:w-1/2 px-12 lg:px-4 overflow-hidden lg:py-2">
-                    {active === "Passport Type" ? <PassportType /> :
-                        active === "Personal Information" ? <PersonalInfo /> :
-                            active === "Address" ? <Address /> :
-                                <ID_Documents />}
+                    {active === "Passport Type" ? 
+                        <PassportType 
+                            goToNextForm={() => {
+                                goToNextFormAndNavigate(index);
+                            }} 
+                        /> :
+                    active === "Personal Information" ? 
+                        <PersonalInfo 
+                            goToNextForm={() => {
+                                goToNextFormAndNavigate(index);
+                            }} 
+                        /> :
+                    active === "Address" ? 
+                        <Address 
+                            goToNextForm={() => {
+                                goToNextFormAndNavigate(index);
+                            }} 
+                        /> :
+                        <ID_Documents 
+                            goToNextForm={() => {
+                                console.log(`Enabling next form after index ${index}`);
+                                goToNextFormAndNavigate(index);
+                            }} 
+                        />}
                 </div>
             </div>
         </>

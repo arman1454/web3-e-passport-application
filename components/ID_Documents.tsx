@@ -1,6 +1,10 @@
 import React from 'react'
 
-const ID_Documents = () => {
+interface ID_DocumentsProps {
+    goToNextForm: () => void;
+}
+
+const ID_Documents = ({ goToNextForm }: ID_DocumentsProps) => {
   return (
     <div>
       ID_Documents
