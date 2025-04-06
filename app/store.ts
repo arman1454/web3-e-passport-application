@@ -59,12 +59,14 @@ interface FormState {
         address: Address_Inf;
     };
     formStatus: FormStatus;
+    currentFormIndex: number; // Add this to track the current form index
     updateFormData: <K extends keyof FormState["formData"]>(
         section: K,
         newData: Partial<FormState["formData"][K]>
     ) => void;
     updateFormStatus: (formName: keyof FormStatus, isEnabled: boolean) => void;
     resetForm: () => void;
+    setCurrentFormIndex: (index: number) => void; // Add setter for the index
 }
 
 export const useFormStore = create<FormState>()(
@@ -88,6 +90,7 @@ export const useFormStore = create<FormState>()(
                 "Passport Options": false,
                 "Delivery Options and Appointment": false,
             },
+            currentFormIndex: 0, // Default to first form
             updateFormData:(section,newData)=> set((state)=>(
                 {
                     formData: {...state.formData, [section]: {...state.formData[section],...newData}},
@@ -118,6 +121,10 @@ export const useFormStore = create<FormState>()(
                     "Delivery Options and Appointment": false,
                 }
             }),
+            setCurrentFormIndex: (index) =>
+                set(() => ({
+                    currentFormIndex: index,
+                })),
         }),
         {name:"form-storage"}
     )

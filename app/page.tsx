@@ -39,14 +39,19 @@ export default function Home() {
     const formStatus = useFormStore((state) => state.formStatus);
     const updateFormStatus = useFormStore((state) => state.updateFormStatus);
     
+    // Get and set the current form index from the store
+    const storedIndex = useFormStore((state) => state.currentFormIndex);
+    const setStoredIndex = useFormStore((state) => state.setCurrentFormIndex);
+    
     // Create derived items array from formStatus
     const items = formNames.map(name => ({
         name,
         status: formStatus[name as keyof FormStatus]
     }));
 
-    const [index, setIndex] = useState(0);
-    const [active, setActive] = useState(items[index].name);
+    // Using the store's currentFormIndex instead of local state
+    const [index, setIndex] = useState(0); // Initialize to 0 to always show the first form on page load
+    const [active, setActive] = useState(formNames[0]); // Always start with the first form
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     // Modified goToNextForm function with direct navigation approach
@@ -65,13 +70,20 @@ export default function Home() {
             // Force update before navigation
             // This bypasses the need to wait for React to re-render with updated formStatus
             setTimeout(() => {
-                // Direct manipulation of index to force navigation
-                setIndex(currentIndex + 1);
+                // Update the index in the store instead of local state
+                setStoredIndex(currentIndex + 1);
             }, 100);
         }
     };
 
-    // Update active state whenever index changes
+    // Update active state whenever stored index changes
+    useEffect(() => {
+        if (formNames[storedIndex]) {
+            setActive(formNames[storedIndex]);
+            console.log(`Set active to: ${formNames[storedIndex]}`);
+        }
+    }, [storedIndex]);
+
     useEffect(() => {
         if (formNames[index]) {
             setActive(formNames[index]);
@@ -84,7 +96,7 @@ export default function Home() {
         console.log("Form status updated:", formStatus);
     }, [formStatus]);
 
-    // Handle sidebar button click with validation
+    // Handle sidebar click with validation and update the stored index
     const handleSidebarClick = (key: number) => {
         // Check if the tab is enabled before navigating
         if (key < items.length && items[key].status) {
@@ -171,25 +183,25 @@ export default function Home() {
                     {active === "Passport Type" ? 
                         <PassportType 
                             goToNextForm={() => {
-                                goToNextFormAndNavigate(index);
+                                goToNextFormAndNavigate(storedIndex);
                             }} 
                         /> :
                     active === "Personal Information" ? 
                         <PersonalInfo 
                             goToNextForm={() => {
-                                goToNextFormAndNavigate(index);
+                                goToNextFormAndNavigate(storedIndex);
                             }} 
                         /> :
                     active === "Address" ? 
                         <Address 
                             goToNextForm={() => {
-                                goToNextFormAndNavigate(index);
+                                goToNextFormAndNavigate(storedIndex);
                             }} 
                         /> :
                         <ID_Documents 
                             goToNextForm={() => {
-                                console.log(`Enabling next form after index ${index}`);
-                                goToNextFormAndNavigate(index);
+                                console.log(`Enabling next form after index ${storedIndex}`);
+                                goToNextFormAndNavigate(storedIndex);
                             }} 
                         />}
                 </div>
