@@ -49,9 +49,15 @@ export default function Home() {
         status: formStatus[name as keyof FormStatus]
     }));
 
+    const lastTrueIndex = (() => {
+        for (let i = 0; i < items.length; i++) {
+            if (!items[i].status) return i - 1;
+        }
+        return items.length - 1;
+    })();
+
     // Using the store's currentFormIndex instead of local state
-    const [index, setIndex] = useState(0); // Initialize to 0 to always show the first form on page load
-    const [active, setActive] = useState(formNames[0]); // Always start with the first form
+    const [active, setActive] = useState("");
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     // Modified goToNextForm function with direct navigation approach
@@ -59,7 +65,7 @@ export default function Home() {
         console.log(`Processing navigation from form ${currentIndex}`);
         
         // Make sure we don't go out of bounds
-        if (currentIndex + 1 < formNames.length) {
+        if (currentIndex + 1 < formNames.length && lastTrueIndex == currentIndex) {
             const nextFormName = formNames[currentIndex + 1] as keyof FormStatus;
             
             // Update the store
@@ -73,23 +79,28 @@ export default function Home() {
                 // Update the index in the store instead of local state
                 setStoredIndex(currentIndex + 1);
             }, 100);
+        }else{
+            setTimeout(() => {
+                // Update the index in the store instead of local state
+                setStoredIndex(lastTrueIndex);
+            }, 100);
         }
     };
-
-    // Update active state whenever stored index changes
+    
     useEffect(() => {
         if (formNames[storedIndex]) {
             setActive(formNames[storedIndex]);
-            console.log(`Set active to: ${formNames[storedIndex]}`);
         }
     }, [storedIndex]);
-
+    
+    
     useEffect(() => {
-        if (formNames[index]) {
-            setActive(formNames[index]);
-            console.log(`Set active to: ${formNames[index]}`);
-        }
-    }, [index]);
+            
+        setActive(formNames[lastTrueIndex]);
+       
+    }, [lastTrueIndex]);
+
+    
 
     // Debug: Watch for changes in formStatus
     useEffect(() => {
@@ -99,14 +110,14 @@ export default function Home() {
     // Handle sidebar click with validation and update the stored index
     const handleSidebarClick = (key: number) => {
         // Check if the tab is enabled before navigating
-        if (key < items.length && items[key].status) {
-            console.log(`Navigating to form ${key}: ${items[key].name}, status: ${items[key].status}`);
-            setIndex(key);
+        
+            // console.log(`Navigating to form ${key}: ${items[key].name}, status: ${items[key].status}`);
+            
+            console.log(key);
+            
+            setStoredIndex(key);
             // setActive is handled by the useEffect
-        } else {
-            console.log(`Cannot navigate to form ${key}: ${items[key]?.name}, status: ${items[key]?.status}`);
-            // You could add a toast notification here
-        }
+        
     };
 
     return (
@@ -170,7 +181,8 @@ export default function Home() {
                             <Button
                                 onClick={() => handleSidebarClick(key)}
                                 disabled={!item.status}
-                                variant={active === item.name ? "default" : "ghost"}
+                                variant={
+                                 active === item.name ? "default" : "ghost"}
                             >
                                 {item.name}
                             </Button>
