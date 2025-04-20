@@ -20,6 +20,11 @@ import { CustomConnectButton } from "@/components/ui/CustomConnectButton";
 import { ArrowRight, ArrowUpRight, ChevronLeft, Menu } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useFormStore, FormStatus } from "@/app/store";
+import EmergencyContact from "./EmergencyContact";
+import PassportOptions from "./PassportOptions";
+import DeliveryAndAppointment from "./DeliveryAndAppointment";
+import SpouseInfo from "./SpouseInfo";
+import ParentalInfo from "./ParentalInfo";
 
 // Define the form item structure
 const formNames = [
@@ -38,11 +43,11 @@ export default function PassportApplicationForm() {
     // Get formStatus from the store
     const formStatus = useFormStore((state) => state.formStatus);
     const updateFormStatus = useFormStore((state) => state.updateFormStatus);
-    
+
     // Get and set the current form index from the store
     const storedIndex = useFormStore((state) => state.currentFormIndex);
     const setStoredIndex = useFormStore((state) => state.setCurrentFormIndex);
-    
+
     // Create derived items array from formStatus
     const items = formNames.map(name => ({
         name,
@@ -63,41 +68,41 @@ export default function PassportApplicationForm() {
     // Modified goToNextForm function with direct navigation approach
     const goToNextFormAndNavigate = (currentIndex: number) => {
         console.log(`Processing navigation from form ${currentIndex}`);
-        
+
         // Make sure we don't go out of bounds
         if (currentIndex + 1 < formNames.length && lastTrueIndex == currentIndex) {
             const nextFormName = formNames[currentIndex + 1] as keyof FormStatus;
-            
+
             // Update the store
             updateFormStatus(nextFormName, true);
-            
+
             console.log(`Enabled form: ${nextFormName}, now navigating...`);
-            
+
             // Force update before navigation
             // This bypasses the need to wait for React to re-render with updated formStatus
             setTimeout(() => {
                 // Update the index in the store instead of local state
                 setStoredIndex(currentIndex + 1);
             }, 100);
-        }else{
+        } else {
             setTimeout(() => {
                 // Update the index in the store instead of local state
                 setStoredIndex(lastTrueIndex);
             }, 100);
         }
     };
-    
+
     useEffect(() => {
         if (formNames[storedIndex]) {
             setActive(formNames[storedIndex]);
         }
     }, [storedIndex]);
-    
-    
+
+
     useEffect(() => {
-            
+
         setActive(formNames[lastTrueIndex]);
-       
+
     }, [lastTrueIndex]);
 
     // Remove debug logs in production
@@ -177,7 +182,7 @@ export default function PassportApplicationForm() {
                                 onClick={() => handleSidebarClick(key)}
                                 disabled={!item.status}
                                 variant={
-                                 active === item.name ? "default" : "ghost"}
+                                    active === item.name ? "default" : "ghost"}
                             >
                                 {item.name}
                             </Button>
@@ -187,30 +192,71 @@ export default function PassportApplicationForm() {
 
                 {/* Content Section */}
                 <div className="w-full lg:w-1/2 px-12 lg:px-4 overflow-hidden lg:py-2">
-                    {active === "Passport Type" ? 
-                        <PassportType 
+                    {active === "Passport Type" ?
+                        <PassportType
                             goToNextForm={() => {
                                 goToNextFormAndNavigate(storedIndex);
-                            }} 
+                            }}
                         /> :
-                    active === "Personal Information" ? 
-                        <PersonalInfo 
-                            goToNextForm={() => {
-                                goToNextFormAndNavigate(storedIndex);
-                            }} 
-                        /> :
-                    active === "Address" ? 
-                        <Address 
-                            goToNextForm={() => {
-                                goToNextFormAndNavigate(storedIndex);
-                            }} 
-                        /> :
-                        <ID_Documents 
-                            goToNextForm={() => {
+                        active === "Personal Information" ?
+                            <PersonalInfo
+                                goToNextForm={() => {
+                                    goToNextFormAndNavigate(storedIndex);
+                                }}
+                            /> :
+                        active === "Address" ?
+                            <Address
+                                goToNextForm={() => {
+                                    goToNextFormAndNavigate(storedIndex);
+                                }}
+                            /> :
+                        active === "ID Documents" ?
+                            <ID_Documents
+                                goToNextForm={() => {
+                                    console.log(`Enabling next form after index ${storedIndex}`);
+                                    goToNextFormAndNavigate(storedIndex);
+                                }}
+                            /> :
+                                    active === "Passport Type" ?
+                                        <PassportType
+                                            goToNextForm={() => {
+                                                goToNextFormAndNavigate(storedIndex);
+                                            }}
+                                        />:
+                                        active === "Spouse Information" ?
+                                            <SpouseInfo
+                                                goToNextForm={() => {
+                                                    console.log(`Enabling next form after index ${storedIndex}`);
+                                                    goToNextFormAndNavigate(storedIndex);
+                                                }}
+                                            /> :
+                        active === "Parental Information" ?
+                            <ParentalInfo
+                                goToNextForm={() => {
+                                    console.log(`Enabling next form after index ${storedIndex}`);
+                                    goToNextFormAndNavigate(storedIndex);
+                                }}
+                            /> :
+                        active === "Emergency Contact" ?
+                            <EmergencyContact
+                                goToNextForm={() => {
+                                    console.log(`Enabling next form after index ${storedIndex}`);
+                                    goToNextFormAndNavigate(storedIndex);
+                                }}
+                            /> :
+                        active === "Passport Options" ?
+                            <PassportOptions
+                                goToNextForm={() => {
+                                    console.log(`Enabling next form after index ${storedIndex}`);
+                                    goToNextFormAndNavigate(storedIndex);
+                                }}
+                            /> :
+                            <DeliveryAndAppointment goToNextForm={() => {
                                 console.log(`Enabling next form after index ${storedIndex}`);
                                 goToNextFormAndNavigate(storedIndex);
-                            }} 
-                        />}
+                            }} />
+
+                    }
                 </div>
             </div>
         </>

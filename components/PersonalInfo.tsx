@@ -28,7 +28,7 @@ interface PersonalInfoProps {
 const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
     const personalInfoForm = useFormStore((state) => state.formData.personalInfo) as PersonalInfo_Inf;
     const updateFormData = useFormStore((state) => state.updateFormData);
-    const [IsSubmitted, setIsSubmitted] = useState<Boolean>(false);
+    const [isSubmitted, setIsSubmitted] = useState<Boolean>(false);
     const [hydrated, setHydrated] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     // Reference to track the previous country code for comparison
@@ -160,7 +160,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                                         }}
                                     />
                                 </FormControl>
-                                {IsSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
@@ -183,7 +183,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                                         }}
                                     />
                                 </FormControl>
-                                {IsSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
@@ -206,7 +206,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                                         }}
                                     />
                                 </FormControl>
-                                {IsSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
@@ -306,7 +306,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                                         }}
                                     />
                                 </FormControl>
-                                {IsSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
@@ -330,7 +330,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                                         <SelectItem value="HONGKONG">HONGKONG</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {IsSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
@@ -354,7 +354,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                                         <SelectItem value="Khula">Khula</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {IsSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />
@@ -403,7 +403,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                                         />
                                     </PopoverContent>
                                 </Popover>
-                                {IsSubmitted && <FormMessage />}
+                                {isSubmitted && <FormMessage />}
                             </FormItem>
                         )}
                     />

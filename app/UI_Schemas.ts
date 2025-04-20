@@ -128,3 +128,63 @@ export const addressFormSchema = z
             }
         }
     });
+
+
+export const idDocsFormSchema = z.object({
+    prevPassport: z.enum(["MRP", "ePP", "nothing"], {
+        required_error: "You need to select a passport type.",
+    }),
+    otherPassport: z.enum(["no", "yes"], {
+        required_error: "You need to select if you have another passport.",
+    }),
+    nid: z.string()
+        .length(10, { message: "National ID must be exactly 10 characters" })
+        .regex(/^\d{10}$/, { message: "National ID must contain only numbers" })
+})
+
+
+export const parentalInfoFormSchema = z.object({
+    fInfoStatus: z.boolean().default(false),
+    fatherName: z.string().min(2, {
+        message: "Father's name must be at least 2 characters.",
+    }),
+    fatherProfession: z.string().min(1, {
+        message: "Please select a profession.",
+    }),
+    fatherNationality: z.string().min(1, {
+        message: "Please select a nationality.",
+    }),
+    fatherNid: z.string()
+        .length(10, { message: "National ID must be exactly 10 characters." })
+        .regex(/^\d{10}$/, { message: "National ID must contain only numbers." }),
+    mInfoStatus: z.boolean().default(false),
+    motherName: z.string().min(2, {
+        message: "Mother's name must be at least 2 characters.",
+    }),
+    motherProfession: z.string().min(1, {
+        message: "Please select a profession.",
+    }),
+    motherNationality: z.string().min(1, {
+        message: "Please select a nationality.",
+    }),
+    motherNid: z.string()
+        .length(10, { message: "National ID must be exactly 10 characters." })
+        .regex(/^\d{10}$/, { message: "National ID must contain only numbers." }),
+    lgiStatus: z.boolean().default(false),
+    legalGname: z.string().min(2, {
+        message: "Legal guardian's name must be at least 2 characters.",
+    }),
+    legalGprofession: z.string().min(1, {
+        message: "Please select a profession.",
+    }),
+    legalGnationality: z.string().min(1, {
+        message: "Please select a nationality.",
+    }),
+
+    mhaon: z.string()
+        .length(10, { message: "Must be exactly 10 digits." })
+        .regex(/^\d{10}$/, { message: "Must contain only numbers." }),
+    
+    
+
+})

@@ -1,6 +1,25 @@
 import { create } from 'zustand'
 import { persist } from "zustand/middleware";
 
+export interface PassportType_Inf {
+    type: "ordinary" | "official" | ""; // ✅ Only allows the correct values
+}
+
+export interface PersonalInfo_Inf {
+    gender: string;
+    fullName: string;
+    firstName: string;
+    surName: string;
+    profession: string
+    religion: string
+    countryCode: string
+    mobileNo: string
+    birthCountry: string
+    birthDistrict: string
+    birthDate: Date | null
+    citizenType: string
+}
+
 export interface Address_Inf{
     district: string;
     city: string;
@@ -20,23 +39,28 @@ export interface Address_Inf{
     officeType:string
 }
 
-export interface PersonalInfo_Inf {
-    gender: string;
-    fullName: string;
-    firstName: string;
-    surName: string;
-    profession:string
-    religion:string
-    countryCode:string
-    mobileNo:string
-    birthCountry:string
-    birthDistrict:string
-    birthDate: Date | null
-    citizenType:string
+export interface ID_Documents{
+    prevPassport:string;
+    otherPassport:boolean|null;
+    nid:string;
 }
 
-export interface PassportType_Inf {
-    type: "ordinary" | "official" | ""; // ✅ Only allows the correct values
+export interface ParentalInfo_Inf{
+    fInfoStatus:boolean;
+    fatherName:string;
+    fatherProfession:string;
+    fatherNationality:string;
+    fatherNid:string;
+    mInfoStatus:boolean;
+    motherName:string;
+    motherProfession:string;
+    motherNationality:string;
+    motherNid:string;
+    lgiStatus:boolean;
+    legalGname:string;
+    legalGprofession:string;
+    legalGnationality:string;
+    mhaon:string;
 }
 
 // New interface to track form status
@@ -45,8 +69,8 @@ export interface FormStatus {
     "Personal Information": boolean;
     "Address": boolean;
     "ID Documents": boolean;
-    "Parental Information": boolean;
     "Spouse Information": boolean;
+    "Parental Information": boolean;
     "Emergency Contact": boolean;
     "Passport Options": boolean;
     "Delivery Options and Appointment": boolean;
@@ -57,6 +81,8 @@ interface FormState {
         passportType: PassportType_Inf;
         personalInfo: PersonalInfo_Inf;
         address: Address_Inf;
+        idDocuments:ID_Documents;
+        parentalInfo:ParentalInfo_Inf;
     };
     formStatus: FormStatus;
     currentFormIndex: number; // Add this to track the current form index
@@ -78,14 +104,31 @@ export const useFormStore = create<FormState>()(
                 address:{district:"",city:"",block:"",postOffice:"",postalCode:"",policeStation:"",
                     yes: false, no: false, country: "", district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: "", officeType:"Regional Passport Office (RPO)"
                 },
+                idDocuments:{prevPassport:"",otherPassport:null,nid:""},
+                parentalInfo: {
+                    fInfoStatus: false,
+                    fatherName: "",
+                    fatherProfession: "",
+                    fatherNationality: "",
+                    fatherNid: "",
+                    mInfoStatus: false,
+                    motherName: "",
+                    motherProfession: "",
+                    motherNationality: "",
+                    motherNid: "",
+                    lgiStatus: false,
+                    legalGname: "",
+                    legalGprofession: "",
+                    legalGnationality: "",
+                    mhaon: "",}
             },
             formStatus: {
                 "Passport Type": true, // First form is always enabled
                 "Personal Information": false,
                 "Address": false,
                 "ID Documents": false,
-                "Parental Information": false,
                 "Spouse Information": false,
+                "Parental Information": false,
                 "Emergency Contact": false,
                 "Passport Options": false,
                 "Delivery Options and Appointment": false,
@@ -108,14 +151,32 @@ export const useFormStore = create<FormState>()(
                         policeStation: "", yes: false, no: false, country: "",
                         district2: "", city2: "", block2: "", postOffice2: "", postalCode2: "", policeStation2: "", officeType:"Regional Passport Office (RPO)"
                     },
+                    idDocuments: { prevPassport: "", otherPassport: null, nid: "" },
+                    parentalInfo: {
+                        fInfoStatus: false,
+                        fatherName: "",
+                        fatherProfession: "",
+                        fatherNationality: "",
+                        fatherNid: "",
+                        mInfoStatus: false,
+                        motherName: "",
+                        motherProfession: "",
+                        motherNationality: "",
+                        motherNid: "",
+                        lgiStatus: false,
+                        legalGname: "",
+                        legalGprofession: "",
+                        legalGnationality: "",
+                        mhaon: "",
+                    }
                 },
                 formStatus: {
                     "Passport Type": true,
                     "Personal Information": false,
                     "Address": false,
                     "ID Documents": false,
-                    "Parental Information": false,
                     "Spouse Information": false,
+                    "Parental Information": false,
                     "Emergency Contact": false,
                     "Passport Options": false,
                     "Delivery Options and Appointment": false,
