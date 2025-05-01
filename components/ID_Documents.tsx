@@ -83,8 +83,8 @@ const ID_Documents = ({ goToNextForm }: ID_DocumentsProps) => {
   return (
     <Card className="border-none shadow-none">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">ID Documents</CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardTitle className="text-foreground text-lg lg:text-xl font-bold">ID Documents</CardTitle>
+        <CardDescription className="text-center lg:text-start text-muted-foreground text-sm md:text-md lg:text-lg">
           Please provide information about your identification documents
         </CardDescription>
       </CardHeader>
@@ -103,7 +103,7 @@ const ID_Documents = ({ goToNextForm }: ID_DocumentsProps) => {
               name="prevPassport"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel className="text-base font-semibold">Do you have any previous passport?</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Do you have any previous passport?</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -185,7 +185,7 @@ const ID_Documents = ({ goToNextForm }: ID_DocumentsProps) => {
               name="otherPassport"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel className="text-base font-semibold">Do you have another passport from a different country?</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Do you have another passport from a different country?</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -216,7 +216,7 @@ const ID_Documents = ({ goToNextForm }: ID_DocumentsProps) => {
               name="nid"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">National ID Number</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">National ID Number</FormLabel>
                   <FormControl>
                     <Input 
                       placeholder="Enter your 10-digit national ID" 

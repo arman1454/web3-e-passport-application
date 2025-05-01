@@ -25,6 +25,7 @@ import PassportOptions from "./PassportOptions";
 import DeliveryAndAppointment from "./DeliveryAndAppointment";
 import SpouseInfo from "./SpouseInfo";
 import ParentalInfo from "./ParentalInfo";
+import Overview from "./Overview";
 
 // Define the form item structure
 const formNames = [
@@ -37,6 +38,7 @@ const formNames = [
     "Emergency Contact",
     "Passport Options",
     "Delivery Options and Appointment",
+    "Overview"
 ];
 
 export default function PassportApplicationForm() {
@@ -251,10 +253,12 @@ export default function PassportApplicationForm() {
                                     goToNextFormAndNavigate(storedIndex);
                                 }}
                             /> :
+                        active === "Delivery Options and Appointment" ?    
                             <DeliveryAndAppointment goToNextForm={() => {
                                 console.log(`Enabling next form after index ${storedIndex}`);
                                 goToNextFormAndNavigate(storedIndex);
-                            }} />
+                            }} />:
+                        <Overview/>    
 
                     }
                 </div>

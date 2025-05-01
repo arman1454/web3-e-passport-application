@@ -97,7 +97,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
   return (
     <Card>
       <CardHeader className='pb-2'>
-        <CardTitle className='text-lg text-card-foreground'>Parental Information</CardTitle>
+        <CardTitle className='text-foreground text-lg lg:text-xl font-bold'>Parental Information</CardTitle>
       </CardHeader>
       <CardContent>
       <Form {...form}>
@@ -143,7 +143,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
             name="fatherName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground">Father Name</FormLabel>
+                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Father Name</FormLabel>
                 <FormControl>
                   <Input
                     disabled = {fUnknown}
@@ -166,7 +166,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
             name="fatherProfession"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground">Father Profession</FormLabel>
+                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Father Profession</FormLabel>
                 <Select disabled={fUnknown} onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-[180px] border-input">
@@ -189,7 +189,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
             name="fatherNationality"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground">Father Nationality</FormLabel>
+                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Father Nationality</FormLabel>
                 <Select disabled={fUnknown} onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-[180px] border-input">
@@ -213,7 +213,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               name="fatherNid"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">National ID No. (optional)</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">National ID No. (optional)</FormLabel>
                   <FormControl>
                     <Input
                       disabled={fUnknown}
@@ -276,7 +276,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
             name="motherName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground">Mother Name</FormLabel>
+                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Mother Name</FormLabel>
                 <FormControl>
                   <Input
                     disabled={mUnknown}
@@ -299,7 +299,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
             name="motherProfession"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-foreground">Mother Profession</FormLabel>
+                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Mother Profession</FormLabel>
                 <Select disabled={mUnknown} onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-[180px] border-input">
@@ -322,7 +322,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               name="motherNationality"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground">Mother Nationality</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Mother Nationality</FormLabel>
                   <Select disabled={mUnknown} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-[180px] border-input">
@@ -346,7 +346,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               name="motherNid"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">National ID No. (optional)</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">National ID No. (optional)</FormLabel>
                   <FormControl>
                     <Input
                       disabled={mUnknown}
@@ -415,7 +415,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               name="legalGname"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Legal Guardian's name (as per NID/BRC)</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Legal Guardian's name (as per NID/BRC)</FormLabel>
                   <FormControl>
                     <Input
                       disabled={lUnknown}
@@ -438,7 +438,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               name="legalGprofession"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground">Select Profession</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Profession</FormLabel>
                   <Select disabled={lUnknown} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-[180px] border-input">
@@ -462,7 +462,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               name="legalGnationality"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-foreground">Select Nationality</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Nationality</FormLabel>
                   <Select disabled={lUnknown} onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-[180px] border-input">
@@ -486,7 +486,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               name="mhaon"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold">Ministry of Home Affairs Order Number</FormLabel>
+                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Ministry of Home Affairs Order Number</FormLabel>
                   <FormControl>
                     <Input
                       disabled={lUnknown}

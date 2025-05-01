@@ -62,8 +62,8 @@ const PassportType = ({ goToNextForm }: PassportTypeProps) => {
     return (
         <div className="flex flex-col gap-4 bg-card text-card-foreground rounded-large lg:w-3/4 w-full shadow-small">
             <div className="flex flex-col items-center lg:items-start gap-4 mt-4 mx-4">
-                <Label className="text-foreground">Passport Type</Label>
-                <Label className="text-center lg:text-start text-muted-foreground">Select the Passport Type for your applications!</Label>
+                <Label className="text-foreground text-lg lg:text-xl font-bold">Passport Type</Label>
+                <Label className="text-center lg:text-start text-muted-foreground text-sm md:text-md lg:text-lg">Select the Passport Type for your applications!</Label>
             </div>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6 mb-4 mx-4 flex flex-col lg:items-start items-center">
@@ -82,13 +82,13 @@ const PassportType = ({ goToNextForm }: PassportTypeProps) => {
                                             <FormControl>
                                                 <RadioGroupItem value="ordinary"/>
                                             </FormControl>
-                                            <FormLabel className="font-normal text-foreground">Ordinary Passport</FormLabel>
+                                            <FormLabel className="font-normal text-foreground text-sm md:text-md lg:text-lg">Ordinary Passport</FormLabel>
                                         </FormItem>
                                         <FormItem className="flex items-center space-x-3 space-y-0">
                                             <FormControl>
                                                 <RadioGroupItem value="official" />
                                             </FormControl>
-                                            <FormLabel className="font-normal text-foreground">Official Passport</FormLabel>
+                                            <FormLabel className="font-normal text-foreground text-sm md:text-md lg:text-lg">Official Passport</FormLabel>
                                         </FormItem>
                                     </RadioGroup>
                                 </FormControl>
@@ -99,6 +99,7 @@ const PassportType = ({ goToNextForm }: PassportTypeProps) => {
                     <Button 
                         type="submit"
                         variant="default"
+                        className="w-full md:w-auto"
                     >
                         Save and Continue
                     </Button>

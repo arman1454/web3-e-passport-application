@@ -63,6 +63,39 @@ export interface ParentalInfo_Inf{
     mhaon:string;
 }
 
+export interface SpouseInfo_Inf{
+    maritalStatus: string;
+    spouseName: string;
+    spouseProfession:string;
+    spouseNationality:string;
+}
+
+export interface EmergencyContact_Inf{
+    contactRelationShip:string;
+    name:string;
+    country:string;
+    district:string;
+    city:string;
+    block:string;
+    postOffice:string;
+    postalCode:string;
+    policeStation:string;
+    email:string;
+    countryCode:string;
+    mobileNo:string;
+}
+
+export interface PassportOptions_Inf {
+    validity: string;
+    price:string; 
+}
+
+export interface DeliveryAndAppointment_Inf {
+    deliveryType: string;
+    price: string;
+    dateTime: Date | null;
+}
+
 // New interface to track form status
 export interface FormStatus {
     "Passport Type": boolean;
@@ -74,6 +107,7 @@ export interface FormStatus {
     "Emergency Contact": boolean;
     "Passport Options": boolean;
     "Delivery Options and Appointment": boolean;
+    "Overview": boolean;
 }
 
 interface FormState {
@@ -83,6 +117,10 @@ interface FormState {
         address: Address_Inf;
         idDocuments:ID_Documents;
         parentalInfo:ParentalInfo_Inf;
+        spouseInfo:SpouseInfo_Inf;
+        emergencyContact: EmergencyContact_Inf;
+        passportOptions:PassportOptions_Inf;
+        deliveryAndAppointment: DeliveryAndAppointment_Inf;
     };
     formStatus: FormStatus;
     currentFormIndex: number; // Add this to track the current form index
@@ -116,11 +154,40 @@ export const useFormStore = create<FormState>()(
                     motherProfession: "",
                     motherNationality: "",
                     motherNid: "",
-                    lgiStatus: false,
+                    lgiStatus: true,
                     legalGname: "",
                     legalGprofession: "",
                     legalGnationality: "",
-                    mhaon: "",}
+                    mhaon: ""},
+                spouseInfo:{
+                    maritalStatus: "",
+                    spouseName: "",
+                    spouseProfession: "",
+                    spouseNationality: ""
+                },
+                emergencyContact:{
+                    contactRelationShip: "",
+                    name: "",
+                    country: "",
+                    district: "",
+                    city: "",
+                    block: "",
+                    postOffice: "",
+                    postalCode: "",
+                    policeStation: "",
+                    email: "",
+                    countryCode: "",
+                    mobileNo: "",
+                },
+                passportOptions:{
+                   validity:"",
+                   price:"" 
+                },
+                deliveryAndAppointment:{
+                    deliveryType:"",
+                    price:"",
+                    dateTime: null
+                }    
             },
             formStatus: {
                 "Passport Type": true, // First form is always enabled
@@ -132,6 +199,7 @@ export const useFormStore = create<FormState>()(
                 "Emergency Contact": false,
                 "Passport Options": false,
                 "Delivery Options and Appointment": false,
+                "Overview": false,
             },
             currentFormIndex: 0, // Default to first form
             updateFormData:(section,newData)=> set((state)=>(
@@ -163,12 +231,41 @@ export const useFormStore = create<FormState>()(
                         motherProfession: "",
                         motherNationality: "",
                         motherNid: "",
-                        lgiStatus: false,
+                        lgiStatus: true,
                         legalGname: "",
                         legalGprofession: "",
                         legalGnationality: "",
-                        mhaon: "",
-                    }
+                        mhaon: ""
+                    },
+                    spouseInfo: {
+                        maritalStatus: "",
+                        spouseName: "",
+                        spouseProfession: "",
+                        spouseNationality: ""
+                    },
+                    emergencyContact: {
+                        contactRelationShip: "",
+                        name: "",
+                        country: "",
+                        district: "",
+                        city: "",
+                        block: "",
+                        postOffice: "",
+                        postalCode: "",
+                        policeStation: "",
+                        email: "",
+                        countryCode: "",
+                        mobileNo: "",
+                    },
+                    passportOptions: {
+                        validity: "",
+                        price:""
+                    },
+                    deliveryAndAppointment: {
+                        deliveryType: "",
+                        price: "",
+                        dateTime: null
+                    }    
                 },
                 formStatus: {
                     "Passport Type": true,
@@ -180,6 +277,7 @@ export const useFormStore = create<FormState>()(
                     "Emergency Contact": false,
                     "Passport Options": false,
                     "Delivery Options and Appointment": false,
+                    "Overview": false,
                 }
             }),
             setCurrentFormIndex: (index) =>

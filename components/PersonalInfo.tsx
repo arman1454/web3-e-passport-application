@@ -113,7 +113,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
     return (
         <div className="bg-card text-card-foreground px-4 lg:w-4/5 shadow-small rounded-large">
             <CardHeader>
-                <CardTitle className='text-lg text-card-foreground'>Personal Information</CardTitle>
+                <CardTitle className='text-foreground text-lg lg:text-xl font-bold'>Personal Information</CardTitle>
             </CardHeader>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
@@ -123,7 +123,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="gender"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">Gender</FormLabel>
+                                <FormLabel className="font-normal text-foreground text-sm md:text-md lg:text-lg">Gender</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value || personalInfoForm.gender}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px] border-input">
@@ -147,7 +147,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="fullName"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>Full Name</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Full Name</FormLabel>
                                 <FormControl>
                                     <Input
                                         defaultValue={personalInfoForm.fullName}
@@ -171,7 +171,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="firstName"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>First Name</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>First Name</FormLabel>
                                 <FormControl>
                                     <Input
                                         className="w-11/12 lg:w-2/3"
@@ -194,7 +194,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="surName"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>Sur Name</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Sur Name</FormLabel>
                                 <FormControl>
                                     <Input
                                         className="w-11/12 lg:w-2/3"
@@ -217,7 +217,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="profession"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Profession</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Profession</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={personalInfoForm.profession}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
@@ -241,7 +241,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="religion"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Religion</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Religion</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={personalInfoForm.religion}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
@@ -265,7 +265,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="countryCode"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Country Code</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Country Code</FormLabel>
                                 <Select 
                                     onValueChange={(value) => {
                                         field.onChange(value);
@@ -294,7 +294,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="mobileNo"
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>Mobile Number</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Mobile Number</FormLabel>
                                 <FormControl>
                                     <Input
                                         className="w-11/12 lg:w-2/3"
@@ -317,7 +317,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="birthCountry"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Country Of Birth</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Country Of Birth</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={personalInfoForm.birthCountry}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
@@ -341,7 +341,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="birthDistrict"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>District Of Birth</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>District Of Birth</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={personalInfoForm.birthDistrict}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px]">
@@ -365,7 +365,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="birthDate"
                         render={({ field }) => (
                             <FormItem className="flex flex-col w-full">
-                                <FormLabel>Birth Date</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Birth Date</FormLabel>
                                 <Popover open={isOpen} onOpenChange={setIsOpen}>
                                     <PopoverTrigger asChild>
                                         <FormControl>
@@ -413,7 +413,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                         name="citizenType"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">Citizenship Type</FormLabel>
+                                <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>Citizenship Type</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value || personalInfoForm.citizenType}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px] border-input">
@@ -434,7 +434,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
                     <Button 
                         type="submit" 
                         onClick={() => setIsSubmitted(true)}
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                        className="w-full md:w-auto"
                     >
                         Save and Continue
                     </Button>

@@ -65,8 +65,18 @@ const Address = ({ goToNextForm }: AddressProps) => {
     }, [hydrated, addressForm, form]);
 
     function onSubmit(values: FormValues) {
-        console.log('🚀 ~ values:', values);
-        updateFormData('address', values);
+        // console.log('🚀 ~ values:', values);
+        if(values.yes == true){
+            const formattedValues = {
+                ...values,
+                country:"Bangladesh",
+                district2:values.district,
+                city2: values.city, block2: values.block, postOffice2: values.postOffice, postalCode2: values.postalCode, policeStation2: values.policeStation
+            } 
+            updateFormData('address', formattedValues);
+        }else{
+            updateFormData('address', values);
+        }
         
         // After saving data, navigate to the next form
         goToNextForm();
@@ -79,9 +89,9 @@ const Address = ({ goToNextForm }: AddressProps) => {
     return (
         <div className='px-4 bg-card text-card-foreground flex flex-col gap-4 lg:w-4/5 shadow-small rounded-large'>
             <CardHeader className='pb-2'>
-                <CardTitle className='text-lg text-card-foreground'>Address</CardTitle>
+                <CardTitle className='text-foreground text-lg lg:text-xl font-bold'>Address</CardTitle>
             </CardHeader>
-            <CardDescription className="text-muted-foreground">Permanent Address</CardDescription>
+            <CardDescription className="text-center lg:text-start text-muted-foreground text-sm md:text-md lg:text-lg">Permanent Address</CardDescription>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     {/* District Field */}
@@ -90,7 +100,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         name="district"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">Select District</FormLabel>
+                                <FormLabel className="font-normal text-foreground text-sm md:text-md lg:text-lg">Select District</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px] border-input">
@@ -114,7 +124,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         name="city"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">City/Village/House</FormLabel>
+                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">City/Village/House</FormLabel>
                                 <FormControl>
                                     <Input 
                                         className='w-1/2'
@@ -137,7 +147,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         name="block"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">Road/Block/Sector</FormLabel>
+                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Road/Block/Sector</FormLabel>
                                 <FormControl>
                                     <Input 
                                         className='w-1/2'
@@ -160,7 +170,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         name="postOffice"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">Select Post Office</FormLabel>
+                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Post Office</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px] border-input">
@@ -184,7 +194,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         name="postalCode"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">Postal Code</FormLabel>
+                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Postal Code</FormLabel>
                                 <FormControl>
                                     <Input 
                                         className='w-1/2'
@@ -207,7 +217,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         name="policeStation"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-foreground">Select Police Station</FormLabel>
+                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Police Station</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger className="w-[180px] border-input">
@@ -225,7 +235,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         )}
                     />
 
-                    <CardDescription className="text-muted-foreground">Present Address</CardDescription>
+                    <CardDescription className="text-center lg:text-start text-muted-foreground text-sm md:text-md lg:text-lg">Present Address</CardDescription>
                     <CardDescription className="text-muted-foreground">
                         Note: Present address is subjected to RPO/BM. The RPO will reject your application 
                         if it does not belong to their jurisdiction. Your payment for the passport may be 
@@ -233,7 +243,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                     </CardDescription>
                     
                     <div className="space-y-1 leading-none">
-                        <FormLabel className="text-foreground">
+                        <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">
                             Present address is the same as permanent?
                         </FormLabel>
                     </div>
@@ -501,6 +511,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                         type="submit" 
                         onClick={() => setIsSubmitted(true)}
                         variant="default"
+                        className="w-full md:w-auto"
                     >
                         Save and Continue
                     </Button>
