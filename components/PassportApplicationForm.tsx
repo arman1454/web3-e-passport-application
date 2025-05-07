@@ -1,31 +1,32 @@
 "use client";
 
-import Address from "@/components/Address";
-import ID_Documents from "@/components/ID_Documents";
-import PassportType from "@/components/PassportType";
-import PersonalInfo from "@/components/PersonalInfo";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { Suspense, lazy, useState, useEffect, useCallback, useMemo } from "react";
 import { Card, CardBody } from "@heroui/react";
 import {
     Drawer,
     DrawerContent,
-    DrawerHeader,
     DrawerBody,
-    DrawerFooter,
     useDisclosure,
 } from "@heroui/react";
 import { Label } from "@/components/ui/label";
 import { CustomConnectButton } from "@/components/ui/CustomConnectButton";
-import { ArrowRight, ArrowUpRight, ChevronLeft, Menu } from "lucide-react";
+import { ArrowRight, ChevronLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useFormStore, FormStatus } from "@/app/store";
-import EmergencyContact from "./EmergencyContact";
-import PassportOptions from "./PassportOptions";
-import DeliveryAndAppointment from "./DeliveryAndAppointment";
-import SpouseInfo from "./SpouseInfo";
-import ParentalInfo from "./ParentalInfo";
-import Overview from "./Overview";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy load form components
+const PassportType = lazy(() => import("./PassportType"));
+const PersonalInfo = lazy(() => import("./PersonalInfo"));
+const Address = lazy(() => import("./Address"));
+const ID_Documents = lazy(() => import("./ID_Documents"));
+const ParentalInfo = lazy(() => import("./ParentalInfo"));
+const SpouseInfo = lazy(() => import("./SpouseInfo"));
+const EmergencyContact = lazy(() => import("./EmergencyContact"));
+const PassportOptions = lazy(() => import("./PassportOptions"));
+const DeliveryAndAppointment = lazy(() => import("./DeliveryAndAppointment"));
+const Overview = lazy(() => import("./Overview"));
 
 // Define the form item structure
 const formNames = [
@@ -51,10 +52,10 @@ export default function PassportApplicationForm() {
     const setStoredIndex = useFormStore((state) => state.setCurrentFormIndex);
 
     // Create derived items array from formStatus
-    const items = formNames.map(name => ({
+    const items = useMemo(() => formNames.map(name => ({
         name,
         status: formStatus[name as keyof FormStatus]
-    }));
+    })), [formNames, formStatus]);
 
     const lastTrueIndex = (() => {
         for (let i = 0; i < items.length; i++) {
@@ -64,11 +65,11 @@ export default function PassportApplicationForm() {
     })();
 
     // Using the store's currentFormIndex instead of local state
-    const [active, setActive] = useState("");
+    const [active, setActive] = useState<keyof typeof formComponents>("Passport Type");
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     // Modified goToNextForm function with direct navigation approach
-    const goToNextFormAndNavigate = (currentIndex: number) => {
+    const goToNextFormAndNavigate = useCallback((currentIndex: number) => {
         console.log(`Processing navigation from form ${currentIndex}`);
 
         // Make sure we don't go out of bounds
@@ -92,18 +93,18 @@ export default function PassportApplicationForm() {
                 setStoredIndex(lastTrueIndex);
             }, 100);
         }
-    };
+    }, [formNames, lastTrueIndex, updateFormStatus, setStoredIndex]);
 
     useEffect(() => {
         if (formNames[storedIndex]) {
-            setActive(formNames[storedIndex]);
+            setActive(formNames[storedIndex] as keyof typeof formComponents);
         }
     }, [storedIndex]);
 
 
     useEffect(() => {
 
-        setActive(formNames[lastTrueIndex]);
+        setActive(formNames[lastTrueIndex] as keyof typeof formComponents);
 
     }, [lastTrueIndex]);
 
@@ -116,11 +117,25 @@ export default function PassportApplicationForm() {
     }, [formStatus]);
 
     // Handle sidebar click with validation and update the stored index
-    const handleSidebarClick = (key: number) => {
-        // Check if the tab is enabled before navigating
-        setStoredIndex(key);
-        // setActive is handled by the useEffect
+    const handleSidebarClick = useCallback((key: number) => {
+        setStoredIndex(key); // Update the stored index in Zustand
+        setActive(formNames[key] as keyof typeof formComponents); // Explicitly update the active state
+    }, [setStoredIndex, formNames]);
+
+    const formComponents = {
+        "Passport Type": PassportType,
+        "Personal Information": PersonalInfo,
+        "Address": Address,
+        "ID Documents": ID_Documents,
+        "Parental Information": ParentalInfo,
+        "Spouse Information": SpouseInfo,
+        "Emergency Contact": EmergencyContact,
+        "Passport Options": PassportOptions,
+        "Delivery Options and Appointment": DeliveryAndAppointment,
+        "Overview": Overview,
     };
+
+    const ActiveComponent = formComponents[active] || Overview;
 
     return (
         <>
@@ -194,75 +209,20 @@ export default function PassportApplicationForm() {
 
                 {/* Content Section */}
                 <div className="w-full lg:w-1/2 px-12 lg:px-4 overflow-hidden lg:py-2">
-                    {active === "Passport Type" ?
-                        <PassportType
-                            goToNextForm={() => {
-                                goToNextFormAndNavigate(storedIndex);
-                            }}
-                        /> :
-                        active === "Personal Information" ?
-                            <PersonalInfo
-                                goToNextForm={() => {
-                                    goToNextFormAndNavigate(storedIndex);
-                                }}
-                            /> :
-                        active === "Address" ?
-                            <Address
-                                goToNextForm={() => {
-                                    goToNextFormAndNavigate(storedIndex);
-                                }}
-                            /> :
-                        active === "ID Documents" ?
-                            <ID_Documents
-                                goToNextForm={() => {
-                                    console.log(`Enabling next form after index ${storedIndex}`);
-                                    goToNextFormAndNavigate(storedIndex);
-                                }}
-                            /> :
-                                    active === "Passport Type" ?
-                                        <PassportType
-                                            goToNextForm={() => {
-                                                goToNextFormAndNavigate(storedIndex);
-                                            }}
-                                        />:
-                                        active === "Spouse Information" ?
-                                            <SpouseInfo
-                                                goToNextForm={() => {
-                                                    console.log(`Enabling next form after index ${storedIndex}`);
-                                                    goToNextFormAndNavigate(storedIndex);
-                                                }}
-                                            /> :
-                        active === "Parental Information" ?
-                            <ParentalInfo
-                                goToNextForm={() => {
-                                    console.log(`Enabling next form after index ${storedIndex}`);
-                                    goToNextFormAndNavigate(storedIndex);
-                                }}
-                            /> :
-                        active === "Emergency Contact" ?
-                            <EmergencyContact
-                                goToNextForm={() => {
-                                    console.log(`Enabling next form after index ${storedIndex}`);
-                                    goToNextFormAndNavigate(storedIndex);
-                                }}
-                            /> :
-                        active === "Passport Options" ?
-                            <PassportOptions
-                                goToNextForm={() => {
-                                    console.log(`Enabling next form after index ${storedIndex}`);
-                                    goToNextFormAndNavigate(storedIndex);
-                                }}
-                            /> :
-                        active === "Delivery Options and Appointment" ?    
-                            <DeliveryAndAppointment goToNextForm={() => {
-                                console.log(`Enabling next form after index ${storedIndex}`);
-                                goToNextFormAndNavigate(storedIndex);
-                            }} />:
-                        <Overview/>    
-
-                    }
+                    <Suspense fallback={
+                        <div className="flex flex-col items-center space-y-8">
+                            
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-full" />
+                            
+                        </div>
+                    }>
+                        <ActiveComponent goToNextForm={() => goToNextFormAndNavigate(storedIndex)} />
+                    </Suspense>
                 </div>
             </div>
         </>
     );
-} 
+}
