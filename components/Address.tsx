@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
     Card,
     CardContent,
@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -19,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { addressFormSchema } from '@/app/UI_Schemas'
 import { Address_Inf } from '@/app/store'
 import { RadioGroup, RadioGroupItem } from './ui/radio-group'
+import { Skeleton } from './ui/skeleton'
 
 // Type for form values with proper typing for officeType
 type FormValues = Omit<z.infer<typeof addressFormSchema>, 'officeType'> & {
@@ -29,6 +30,29 @@ type FormValues = Omit<z.infer<typeof addressFormSchema>, 'officeType'> & {
 interface AddressProps {
     goToNextForm: () => void;
 }
+
+const DISTRICT_OPTIONS = [
+    { value: "Dhaka", label: "Dhaka" },
+    { value: "Khulna", label: "Khulna" },
+    { value: "Chittagong", label: "Chittagong" },
+]
+
+const POST_OFFICE_OPTIONS = [
+    { value: "Office1", label: "Office 1" },
+    { value: "Office2", label: "Office 2" },
+    { value: "Office3", label: "Office 3" },
+]
+
+const POLICE_STATION_OPTIONS = [
+    { value: "Station1", label: "Station 1" },
+    { value: "Station2", label: "Station 2" },
+    { value: "Station3", label: "Station 3" },
+]
+const COUNTRY_OPTIONS = [
+    { value: "Bangladesh", label: "Bangladesh" },
+    { value: "India", label: "India" },
+    { value: "Pakistan", label: "Pakistan" },
+]
 
 const Address = ({ goToNextForm }: AddressProps) => {
     const addressForm = useFormStore((state) => state.formData.address) as Address_Inf;
@@ -47,7 +71,10 @@ const Address = ({ goToNextForm }: AddressProps) => {
     });
 
     // Watch values for the radio buttons to control conditional rendering
-    const showPresentAddress = form.watch("no");
+    const showPresentAddress = useWatch({
+        control: form.control,
+        name: 'no',
+    });
 
     // ✅ Ensure Zustand has loaded before rendering form
     useEffect(() => {
@@ -64,27 +91,118 @@ const Address = ({ goToNextForm }: AddressProps) => {
         }
     }, [hydrated, addressForm, form]);
 
-    function onSubmit(values: FormValues) {
-        // console.log('🚀 ~ values:', values);
-        if(values.yes == true){
-            const formattedValues = {
-                ...values,
-                country:"Bangladesh",
-                district2:values.district,
-                city2: values.city, block2: values.block, postOffice2: values.postOffice, postalCode2: values.postalCode, policeStation2: values.policeStation
-            } 
-            updateFormData('address', formattedValues);
-        }else{
-            updateFormData('address', values);
+    const onSubmit = useCallback(async (values: FormValues) => {
+        try {
+            if (values.yes) {
+                const formattedValues = {
+                    ...values,
+                    country: "Bangladesh",
+                    district2: values.district,
+                    city2: values.city,
+                    block2: values.block,
+                    postOffice2: values.postOffice,
+                    postalCode2: values.postalCode,
+                    policeStation2: values.policeStation,
+                };
+                updateFormData('address', formattedValues);
+            } else {
+                updateFormData('address', values);
+            }
+            goToNextForm();
+        } catch (error) {
+            console.error("Form submission failed:", error);
+            // Optionally, show an error message to the user
         }
-        
-        // After saving data, navigate to the next form
-        goToNextForm();
-    }
+    }, [updateFormData, goToNextForm]);
+
+
+    
+
+    const renderTextField = (name: keyof FormValues, label: string, placeholder: string) => (
+        <FormField
+            control={form.control}
+            name={name}
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel> {/* Updated to match the original className */}
+                    <FormControl>
+                        <Input
+                            className="w-1/2 text-sm md:text-md lg:text-lg" // Added missing Tailwind classes
+                            placeholder={placeholder}
+                            {...field}
+                            value={typeof field.value === 'string' ? field.value : ''}
+                            onChange={(e) => {
+                                field.onChange(e);
+                                setIsSubmitted(false);
+                            }}
+                        />
+                    </FormControl>
+                    {isSubmitted && <FormMessage className="text-destructive" />}
+                </FormItem>
+            )}
+        />
+    );
+
+    const renderSelectField = (name: keyof FormValues, label: string, options: Array<{ value: string; label: string }>) => (
+        <FormField
+            control={form.control}
+            name={name}
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel className="font-normal text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel>
+                    <Select
+                        onValueChange={field.onChange}
+                        value={typeof field.value === 'string' ? field.value : undefined}
+                    >
+                        <FormControl>
+                            <SelectTrigger className="w-[180px] border-input">
+                                <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="bg-popover text-popover-foreground">
+                            {options.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {isSubmitted && <FormMessage className="text-destructive" />}
+                </FormItem>
+            )}
+        />
+    );
+
+
+    // Reusable function to handle checkbox toggling
+    const handleCheckboxToggle = useCallback((field: any, currentValue: boolean, otherFieldName: keyof FormValues) => {
+        if (!currentValue) {
+            form.setValue(field.name, true);
+            form.setValue(otherFieldName, false);
+        }
+    }, [form]);
 
     if (!hydrated) {
-        return <p>Loading...</p>; // ✅ Prevent flickering
+        return (
+            <div className="space-y-4">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-full" />
+            </div>
+        );
     }
+
+    const renderPresentAddressFields = () => (
+        <>
+            {renderSelectField("country", "Select Country", COUNTRY_OPTIONS)}
+            {renderSelectField("district2", "Select District", DISTRICT_OPTIONS)}
+            {renderTextField("city2", "City/Village/House", "Enter city/village/house")}
+            {renderTextField("block2", "Road/Block/Sector", "Enter road/block/sector")}
+            {renderSelectField("postOffice2", "Select Post Office", POST_OFFICE_OPTIONS)}
+            {renderTextField("postalCode2", "Postal Code", "Enter postal code")}
+            {renderSelectField("policeStation2", "Select Police Station", POLICE_STATION_OPTIONS)}
+        </>
+    );
 
     return (
         <div className='px-4 bg-card text-card-foreground flex flex-col gap-4 lg:w-4/5 shadow-small rounded-large'>
@@ -95,145 +213,22 @@ const Address = ({ goToNextForm }: AddressProps) => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     {/* District Field */}
-                    <FormField
-                        control={form.control}
-                        name="district"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="font-normal text-foreground text-sm md:text-md lg:text-lg">Select District</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger className="w-[180px] border-input">
-                                            <SelectValue placeholder="Select a district"/>
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent className="bg-popover text-popover-foreground">
-                                        <SelectItem value="Dhaka">Dhaka</SelectItem>
-                                        <SelectItem value="Khulna">Khulna</SelectItem>
-                                        <SelectItem value="Chittagong">Chittagong</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {isSubmitted && <FormMessage className="text-destructive" />}
-                            </FormItem>
-                        )}
-                    />
+                    {renderSelectField("district", "Select District", DISTRICT_OPTIONS)}
 
                     {/* City Field */}
-                    <FormField
-                        control={form.control}
-                        name="city"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">City/Village/House</FormLabel>
-                                <FormControl>
-                                    <Input 
-                                        className='w-1/2'
-                                        placeholder="Enter city/village/house" 
-                                        {...field}
-                                        onChange={(e) => {
-                                            field.onChange(e);
-                                            setIsSubmitted(false);
-                                        }}
-                                    />
-                                </FormControl>
-                                {isSubmitted && <FormMessage className="text-destructive" />}
-                            </FormItem>
-                        )}
-                    />
+                    {renderTextField("city", "City/Village/House", "Enter city/village/house")}
 
                     {/* Block Field */}
-                    <FormField
-                        control={form.control}
-                        name="block"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Road/Block/Sector</FormLabel>
-                                <FormControl>
-                                    <Input 
-                                        className='w-1/2'
-                                        placeholder="Enter road/block/sector" 
-                                        {...field}
-                                        onChange={(e) => {
-                                            field.onChange(e);
-                                            setIsSubmitted(false);
-                                        }}
-                                    />
-                                </FormControl>
-                                {isSubmitted && <FormMessage className="text-destructive" />}
-                            </FormItem>
-                        )}
-                    />
+                    {renderTextField("block", "Road/Block/Sector", "Enter road/block/sector")}
 
                     {/* Post Office Field */}
-                    <FormField
-                        control={form.control}
-                        name="postOffice"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Post Office</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger className="w-[180px] border-input">
-                                            <SelectValue placeholder="Select a post office"/>
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent className="bg-popover text-popover-foreground">
-                                        <SelectItem value="Office1">Office 1</SelectItem>
-                                        <SelectItem value="Office2">Office 2</SelectItem>
-                                        <SelectItem value="Office3">Office 3</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {isSubmitted && <FormMessage className="text-destructive" />}
-                            </FormItem>
-                        )}
-                    />
+                    {renderSelectField("postOffice", "Select Post Office", POST_OFFICE_OPTIONS)}
 
                     {/* Postal Code Field */}
-                    <FormField
-                        control={form.control}
-                        name="postalCode"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Postal Code</FormLabel>
-                                <FormControl>
-                                    <Input 
-                                        className='w-1/2'
-                                        placeholder="Enter postal code" 
-                                        {...field}
-                                        onChange={(e) => {
-                                            field.onChange(e);
-                                            setIsSubmitted(false);
-                                        }}
-                                    />
-                                </FormControl>
-                                {isSubmitted && <FormMessage className="text-destructive" />}
-                            </FormItem>
-                        )}
-                    />
+                    {renderTextField("postalCode", "Postal Code", "Enter postal code")}
 
                     {/* Police Station Field */}
-                    <FormField
-                        control={form.control}
-                        name="policeStation"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Police Station</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger className="w-[180px] border-input">
-                                            <SelectValue placeholder="Select a police station"/>
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent className="bg-popover text-popover-foreground">
-                                        <SelectItem value="Station1">Station 1</SelectItem>
-                                        <SelectItem value="Station2">Station 2</SelectItem>
-                                        <SelectItem value="Station3">Station 3</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                {isSubmitted && <FormMessage className="text-destructive" />}
-                            </FormItem>
-                        )}
-                    />
+                    {renderSelectField("policeStation", "Select Police Station", POLICE_STATION_OPTIONS)}
 
                     <CardDescription className="text-center lg:text-start text-muted-foreground text-sm md:text-md lg:text-lg">Present Address</CardDescription>
                     <CardDescription className="text-muted-foreground">
@@ -260,12 +255,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                                         <FormControl>
                                             <Checkbox
                                                 checked={field.value}
-                                                onCheckedChange={(checked) => {
-                                                    if (checked) {
-                                                        form.setValue("yes", true);
-                                                        form.setValue("no", false);
-                                                    }
-                                                }}
+                                                onCheckedChange={() => handleCheckboxToggle(field, field.value, "no")}
                                                 className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                                             />
                                         </FormControl>
@@ -286,12 +276,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                                         <FormControl>
                                             <Checkbox
                                                 checked={field.value}
-                                                onCheckedChange={(checked) => {
-                                                    if (checked) {
-                                                        form.setValue("no", true);
-                                                        form.setValue("yes", false);
-                                                    }
-                                                }}
+                                                onCheckedChange={() => handleCheckboxToggle(field, field.value, "yes")}
                                                 className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
                                             />
                                         </FormControl>
@@ -303,174 +288,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                     </div>
 
                     {/* Conditional Present Address Fields - Only show if "No" is checked */}
-                    {showPresentAddress && (
-                        <>
-                            {/* Country Field */}
-                            <FormField
-                                control={form.control}
-                                name="country"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-foreground">Select Country</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-[180px] border-input">
-                                                    <SelectValue placeholder="Select a country"/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className="bg-popover text-popover-foreground">
-                                                <SelectItem value="Bangladesh">Bangladesh</SelectItem>
-                                                <SelectItem value="India">India</SelectItem>
-                                                <SelectItem value="Pakistan">Pakistan</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        {isSubmitted && <FormMessage className="text-destructive" />}
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* District2 Field */}
-                            <FormField
-                                control={form.control}
-                                name="district2"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-foreground">Select District</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-[180px] border-input">
-                                                    <SelectValue placeholder="Select a district"/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className="bg-popover text-popover-foreground">
-                                                <SelectItem value="Dhaka">Dhaka</SelectItem>
-                                                <SelectItem value="Khulna">Khulna</SelectItem>
-                                                <SelectItem value="Chittagong">Chittagong</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        {isSubmitted && <FormMessage className="text-destructive" />}
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* City2 Field */}
-                            <FormField
-                                control={form.control}
-                                name="city2"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-foreground">City/Village/House</FormLabel>
-                                        <FormControl>
-                                            <Input 
-                                                className='w-1/2'
-                                                placeholder="Enter city/village/house" 
-                                                {...field}
-                                                onChange={(e) => {
-                                                    field.onChange(e);
-                                                    setIsSubmitted(false);
-                                                }}
-                                            />
-                                        </FormControl>
-                                        {isSubmitted && <FormMessage className="text-destructive" />}
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Block2 Field */}
-                            <FormField
-                                control={form.control}
-                                name="block2"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-foreground">Road/Block/Sector</FormLabel>
-                                        <FormControl>
-                                            <Input 
-                                                className='w-1/2'
-                                                placeholder="Enter road/block/sector" 
-                                                {...field}
-                                                onChange={(e) => {
-                                                    field.onChange(e);
-                                                    setIsSubmitted(false);
-                                                }}
-                                            />
-                                        </FormControl>
-                                        {isSubmitted && <FormMessage className="text-destructive" />}
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Post Office2 Field */}
-                            <FormField
-                                control={form.control}
-                                name="postOffice2"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-foreground">Select Post Office</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-[180px] border-input">
-                                                    <SelectValue placeholder="Select a post office"/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className="bg-popover text-popover-foreground">
-                                                <SelectItem value="Office1">Office 1</SelectItem>
-                                                <SelectItem value="Office2">Office 2</SelectItem>
-                                                <SelectItem value="Office3">Office 3</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        {isSubmitted && <FormMessage className="text-destructive" />}
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Postal Code2 Field */}
-                            <FormField
-                                control={form.control}
-                                name="postalCode2"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-foreground">Postal Code</FormLabel>
-                                        <FormControl>
-                                            <Input 
-                                                className='w-1/2'
-                                                placeholder="Enter postal code" 
-                                                {...field}
-                                                onChange={(e) => {
-                                                    field.onChange(e);
-                                                    setIsSubmitted(false);
-                                                }}
-                                            />
-                                        </FormControl>
-                                        {isSubmitted && <FormMessage className="text-destructive" />}
-                                    </FormItem>
-                                )}
-                            />
-
-                            {/* Police Station2 Field */}
-                            <FormField
-                                control={form.control}
-                                name="policeStation2"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-foreground">Select Police Station</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-[180px] border-input">
-                                                    <SelectValue placeholder="Select a police station"/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent className="bg-popover text-popover-foreground">
-                                                <SelectItem value="Station1">Station 1</SelectItem>
-                                                <SelectItem value="Station2">Station 2</SelectItem>
-                                                <SelectItem value="Station3">Station 3</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        {isSubmitted && <FormMessage className="text-destructive" />}
-                                    </FormItem>
-                                )}
-                            />
-                        </>
-                    )}
+                    {showPresentAddress && renderPresentAddressFields()}
 
                     <CardDescription className="text-muted-foreground">Available Regional Passport Office and Bangladesh Mission</CardDescription>
                     <FormField
