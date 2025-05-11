@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Label } from './ui/label';
 import {
   Form,
@@ -20,6 +20,7 @@ import { useFormStore } from '@/app/store';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { z } from 'zod';
 import { Image } from '@heroui/react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type FormValues = z.infer<typeof idDocsFormSchema>;
 
@@ -63,21 +64,27 @@ const ID_Documents = ({ goToNextForm }: ID_DocumentsProps) => {
     }
   }, [hydrated]); // Only depend on hydrated state, not on form or idDocuments
 
-  function onSubmit(values: FormValues) {
+  const onSubmit = useCallback((values: FormValues) => {
     console.log('ID Documents Form Data:', values);
     
     // Convert the string values to the appropriate types for storage
     const formattedValues = {
-      ...values,
-      otherPassport: values.otherPassport === "yes" // Convert to boolean
+        ...values,
+        otherPassport: values.otherPassport === "yes" // Convert to boolean
     };
     
     updateFormData('idDocuments', formattedValues);
     goToNextForm();
-  }
+  }, [updateFormData, goToNextForm]);
 
   if (!hydrated) {
-    return <p>Loading...</p>;
+    return (
+        <div className="space-y-4">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-4 w-full" />
+        </div>
+    );
   }
 
   return (

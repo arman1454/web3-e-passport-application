@@ -1,8 +1,8 @@
 import { useFormStore } from '@/app/store';
 import { parentalInfoFormSchema } from '@/app/UI_Schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { useForm, useWatch } from 'react-hook-form';
 import {
   Card,
   CardContent,
@@ -18,6 +18,7 @@ import { Button } from './ui/button';
 import { z } from 'zod';
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
+import { Skeleton } from './ui/skeleton';
 
 
 type FormValues = z.infer<typeof parentalInfoFormSchema>;
@@ -31,9 +32,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
   const updateFormData = useFormStore((state) => state.updateFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [hydrated, setHydrated] = useState(false);
-  const [fUnknown,setFunknown] = useState(parentalInfoForm.fInfoStatus);
-  const [mUnknown,setMunknown] = useState(parentalInfoForm.mInfoStatus);
-  const [lUnknown,setLunknown] = useState(parentalInfoForm.lgiStatus);
+  const hasResetForm = useRef(false);
   
 
   const form = useForm<FormValues>({
@@ -58,13 +57,17 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
     mode: "onChange",
   });
 
+  const fUnknown = useWatch({ control: form.control, name: "fInfoStatus" });
+  const mUnknown = useWatch({ control: form.control, name: "mInfoStatus" });
+  const lUnknown = useWatch({ control: form.control, name: "lgiStatus" });
+
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated) {
+    if (hydrated && !hasResetForm.current) {
       form.reset({
         fInfoStatus: parentalInfoForm.fInfoStatus,
         fatherName: parentalInfoForm.fatherName,
@@ -82,17 +85,24 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
         legalGnationality: parentalInfoForm.legalGnationality,
         mhaon: parentalInfoForm.mhaon,
       });
+      hasResetForm.current = true; // Mark as reset
     }
   }, [hydrated, parentalInfoForm, form]);
   
-  function onSubmit(values: FormValues) {
+  const onSubmit = useCallback((values: FormValues) => {
     console.log('🚀 ~ values:', values);
     updateFormData('parentalInfo', values);
     goToNextForm();
-  }
+  }, [updateFormData, goToNextForm]);
 
   if (!hydrated) {
-    return <p>Loading...</p>;
+    return (
+        <div className="space-y-4">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-4 w-full" />
+        </div>
+    );
   }
   return (
     <Card>
@@ -118,9 +128,15 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={(e)=>{
-                        field.onChange(e);
-                        {fUnknown?setFunknown(false):setFunknown(true)};
-                        // setFunknown(true);
+                        const isChecked = e === true; // Convert CheckedState to boolean
+                        field.onChange(isChecked);
+                        if (isChecked) {
+                          // Clear connected fields temporarily
+                          form.setValue("fatherName", "");
+                          form.setValue("fatherProfession", "");
+                          form.setValue("fatherNationality", "");
+                          form.setValue("fatherNid", "");
+                        }
                       }}
                     />
                       
@@ -250,9 +266,15 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={(e) => {
-                          field.onChange(e);
-                          { mUnknown ? setMunknown(false) : setMunknown(true) };
-                          // setFunknown(true);
+                          const isChecked = e === true; // Convert CheckedState to boolean
+                          field.onChange(isChecked);
+                          if (isChecked) {
+                            // Clear connected fields temporarily
+                            form.setValue("motherName", "");
+                            form.setValue("motherProfession", "");
+                            form.setValue("motherNationality", "");
+                            form.setValue("motherNid", "");
+                          }
                         }}
                       />
 
@@ -381,9 +403,15 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={(e) => {
-                          field.onChange(e);
-                          { lUnknown ? setLunknown(false) : setLunknown(true) };
-                          // setFunknown(true);
+                          const isChecked = e === true; // Convert CheckedState to boolean
+                          field.onChange(isChecked);
+                          if (isChecked) {
+                            // Clear connected fields temporarily
+                            form.setValue("legalGname", "");
+                            form.setValue("legalGprofession", "");
+                            form.setValue("legalGnationality", "");
+                            form.setValue("mhaon", "");
+                          }
                         }}
                       />
 
