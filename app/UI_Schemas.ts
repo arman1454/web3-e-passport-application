@@ -292,7 +292,7 @@ export const parentalInfoFormSchema = z
             }
             if (!data.mhaon || !/^\d{10}$/.test(data.mhaon)) {
                 ctx.addIssue({
-                    path: ["motherNid"],
+                    path: ["mhaon"],
                     code: z.ZodIssueCode.custom,
                     message: "National ID must be exactly 10 digits and contain only numbers.",
                 });

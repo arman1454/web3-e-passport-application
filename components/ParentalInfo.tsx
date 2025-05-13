@@ -20,6 +20,19 @@ import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { Skeleton } from './ui/skeleton';
 
+// Select options constants
+const PROFESSION_OPTIONS = [
+  { value: "Service", label: "Service" },
+  { value: "Business", label: "Business" },
+  { value: "Teacher", label: "Teacher" },
+  { value: "Other", label: "Other" },
+];
+const NATIONALITY_OPTIONS = [
+  { value: "Bangladeshi", label: "Bangladeshi" },
+  { value: "Indian", label: "Indian" },
+  { value: "American", label: "American" },
+  { value: "Other", label: "Other" },
+];
 
 type FormValues = z.infer<typeof parentalInfoFormSchema>;
 
@@ -95,6 +108,118 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
     goToNextForm();
   }, [updateFormData, goToNextForm]);
 
+  const renderTextField = (name: keyof FormValues, label: string, placeholder: string, className?: string, disabled?: boolean) => (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => {
+        // Ensure value is always string | number | readonly string[] | undefined
+        let safeValue = field.value;
+        if (typeof safeValue === 'boolean' || typeof safeValue === 'undefined') {
+          safeValue = '';
+        }
+        return (
+          <FormItem className={className || "w-full"}>
+            <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel>
+            <FormControl>
+              <Input
+                disabled={disabled}
+                className={className || "w-1/2"}
+                placeholder={placeholder}
+                {...field}
+                value={safeValue}
+                onChange={(e) => {
+                  field.onChange(e);
+                  setIsSubmitted(false);
+                }}
+              />
+            </FormControl>
+            {isSubmitted && <FormMessage className="text-destructive" />}
+          </FormItem>
+        );
+      }}
+    />
+  );
+
+  const renderSelectField = (
+    name: keyof FormValues,
+    label: string,
+    placeholder: string,
+    options: { value: string; label: string }[],
+    disabled?: boolean
+  ) => (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel>
+          <Select
+            disabled={disabled}
+            onValueChange={field.onChange}
+            value={typeof field.value === "string" ? field.value : undefined}
+          >
+            <FormControl>
+              <SelectTrigger className="w-[180px] border-input">
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent className="bg-popover text-popover-foreground">
+              {options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {isSubmitted && <FormMessage className="text-destructive" />}
+        </FormItem>
+      )}
+    />
+  );
+
+  // Checkbox group helper
+  const CheckboxGroup = ({
+    name,
+    label,
+    unknownLabel,
+    onCheckedChange,
+    checked
+  }: {
+    name: keyof FormValues;
+    label: string;
+    unknownLabel: string;
+    onCheckedChange: (isChecked: boolean) => void;
+    checked: boolean;
+  }) => (
+    <FormField
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex flex-row items-start space-x-12 space-y-0 rounded-md border-none p-4 shadow">
+          <div className="space-y-1 leading-none">
+            <FormLabel>{label}</FormLabel>
+          </div>
+          <div className="flex gap-4">
+            <FormControl>
+              <Checkbox
+                checked={typeof field.value === 'boolean' ? field.value : false}
+                onCheckedChange={(e) => {
+                  const isChecked = e === true;
+                  field.onChange(isChecked);
+                  onCheckedChange(isChecked);
+                }}
+              />
+            </FormControl>
+            <div className="space-y-1 leading-none">
+              <FormLabel>{unknownLabel}</FormLabel>
+            </div>
+          </div>
+        </FormItem>
+      )}
+    />
+  );
+
   if (!hydrated) {
     return (
         <div className="space-y-4">
@@ -112,322 +237,63 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
       <CardContent>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
+            {/* Father */}
+            <CheckboxGroup
               name="fInfoStatus"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-12 space-y-0 rounded-md border-none p-4 shadow">
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Father Information
-                    </FormLabel>
-                    
-                  </div>
-                <div className='flex gap-4'>
-                 <FormControl >
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={(e)=>{
-                        const isChecked = e === true; // Convert CheckedState to boolean
-                        field.onChange(isChecked);
-                        if (isChecked) {
-                          // Clear connected fields temporarily
-                          form.setValue("fatherName", "");
-                          form.setValue("fatherProfession", "");
-                          form.setValue("fatherNationality", "");
-                          form.setValue("fatherNid", "");
-                        }
-                      }}
-                    />
-                      
-                   
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Unknown
-                    </FormLabel>
-
-                  </div>
-                  </div> 
-                  
-                  
-                </FormItem>
-              )}
+              label="Father Information"
+              unknownLabel="Unknown"
+              checked={fUnknown}
+              onCheckedChange={(isChecked) => {
+                if (isChecked) {
+                  form.setValue("fatherName", "");
+                  form.setValue("fatherProfession", "");
+                  form.setValue("fatherNationality", "");
+                  form.setValue("fatherNid", "");
+                }
+              }}
             />
-            <FormField
-            control={form.control}
-            name="fatherName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Father Name</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled = {fUnknown}
-                    className='w-1/2'
-                    placeholder="Enter Father Name"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setIsSubmitted(false);
-                    }}
-                  />
-                </FormControl>
-                {isSubmitted && <FormMessage className="text-destructive" />}
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="fatherProfession"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Father Profession</FormLabel>
-                <Select disabled={fUnknown} onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-[180px] border-input">
-                      <SelectValue placeholder="Select Profession" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-popover text-popover-foreground">
-                    <SelectItem value="Service">Service</SelectItem>
-                    <SelectItem value="Business">Business</SelectItem>
-                    <SelectItem value="Teacher">Teacher</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                {isSubmitted && <FormMessage className="text-destructive" />}
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="fatherNationality"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Father Nationality</FormLabel>
-                <Select disabled={fUnknown} onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-[180px] border-input">
-                      <SelectValue placeholder="Select Nationality" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-popover text-popover-foreground">
-                    <SelectItem value="Bangladeshi">Bangladeshi</SelectItem>
-                    <SelectItem value="Indian">Indian</SelectItem>
-                    <SelectItem value="American">American</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                {isSubmitted && <FormMessage className="text-destructive" />}
-              </FormItem>
-            )}
-          />
-
-            <FormField
-              control={form.control}
-              name="fatherNid"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">National ID No. (optional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={fUnknown}
-                      placeholder="Enter your 10-digit national ID"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setIsSubmitted(false);
-                      }}
-                      className="w-full md:w-2/3"
-                    // maxLength={10}
-                    />
-                  </FormControl>
-                  {isSubmitted && <FormMessage className="text-destructive" />}
-                </FormItem>
-              )}
-            />
+            {renderTextField("fatherName", "Father Name", "Enter Father Name", "w-1/2", fUnknown)}
+            {renderSelectField("fatherProfession", "Father Profession", "Select Profession", PROFESSION_OPTIONS, fUnknown)}
+            {renderSelectField("fatherNationality", "Father Nationality", "Select Nationality", NATIONALITY_OPTIONS, fUnknown)}
+            {renderTextField("fatherNid", "National ID No. (optional)", "Enter your 10-digit national ID", "w-full md:w-2/3", fUnknown)}
           
           {/* mother */}
 
-            <FormField
-              control={form.control}
+            {/* Mother */}
+            <CheckboxGroup
               name="mInfoStatus"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-12 space-y-0 rounded-md border-none p-4 shadow">
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Mother Information
-                    </FormLabel>
-
-                  </div>
-                  <div className='flex gap-4'>
-                    <FormControl >
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(e) => {
-                          const isChecked = e === true; // Convert CheckedState to boolean
-                          field.onChange(isChecked);
-                          if (isChecked) {
-                            // Clear connected fields temporarily
-                            form.setValue("motherName", "");
-                            form.setValue("motherProfession", "");
-                            form.setValue("motherNationality", "");
-                            form.setValue("motherNid", "");
-                          }
-                        }}
-                      />
-
-
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Unknown
-                      </FormLabel>
-
-                    </div>
-                  </div>
-
-
-                </FormItem>
-              )}
+              label="Mother Information"
+              unknownLabel="Unknown"
+              checked={mUnknown}
+              onCheckedChange={(isChecked) => {
+                if (isChecked) {
+                  form.setValue("motherName", "");
+                  form.setValue("motherProfession", "");
+                  form.setValue("motherNationality", "");
+                  form.setValue("motherNid", "");
+                }
+              }}
             />    
 
-          <FormField
-            control={form.control}
-            name="motherName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Mother Name</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={mUnknown}
-                    className='w-1/2'
-                    placeholder="Enter Mother Name"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setIsSubmitted(false);
-                    }}
-                  />
-                </FormControl>
-                {isSubmitted && <FormMessage className="text-destructive" />}
-              </FormItem>
-            )}
-          />
+          {renderTextField("motherName", "Mother Name", "Enter Mother Name", "w-1/2", mUnknown)}
+          {renderSelectField("motherProfession", "Mother Profession", "Select Profession", PROFESSION_OPTIONS, mUnknown)}
+          {renderSelectField("motherNationality", "Mother Nationality", "Select Nationality", NATIONALITY_OPTIONS, mUnknown)}
+          {renderTextField("motherNid", "National ID No. (optional)", "Enter your 10-digit national ID", "w-full md:w-2/3", mUnknown)}
 
-          <FormField
-            control={form.control}
-            name="motherProfession"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Mother Profession</FormLabel>
-                <Select disabled={mUnknown} onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-[180px] border-input">
-                      <SelectValue placeholder="Select Profession" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-popover text-popover-foreground">
-                    <SelectItem value="Service">Service</SelectItem>
-                    <SelectItem value="Business">Business</SelectItem>
-                    <SelectItem value="Teacher">Teacher</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-                {isSubmitted && <FormMessage className="text-destructive" />}
-              </FormItem>
-            )}
-          />
-            <FormField
-              control={form.control}
-              name="motherNationality"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Mother Nationality</FormLabel>
-                  <Select disabled={mUnknown} onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-[180px] border-input">
-                        <SelectValue placeholder="Select Nationality" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-popover text-popover-foreground">
-                      <SelectItem value="Bangladeshi">Bangladeshi</SelectItem>
-                      <SelectItem value="Indian">Indian</SelectItem>
-                      <SelectItem value="American">American</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {isSubmitted && <FormMessage className="text-destructive" />}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="motherNid"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">National ID No. (optional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={mUnknown}
-                      placeholder="Enter your 10-digit national ID"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setIsSubmitted(false);
-                      }}
-                      className="w-full md:w-2/3"
-                    // maxLength={10}
-                    />
-                  </FormControl>
-                  {isSubmitted && <FormMessage className="text-destructive" />}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
+            {/* Legal Guardian */}
+            <CheckboxGroup
               name="lgiStatus"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-12 space-y-0 rounded-md border-none p-4 shadow">
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Legal Guardian Information
-                    </FormLabel>
-
-                  </div>
-                  <div className='flex gap-4'>
-                    <FormControl >
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(e) => {
-                          const isChecked = e === true; // Convert CheckedState to boolean
-                          field.onChange(isChecked);
-                          if (isChecked) {
-                            // Clear connected fields temporarily
-                            form.setValue("legalGname", "");
-                            form.setValue("legalGprofession", "");
-                            form.setValue("legalGnationality", "");
-                            form.setValue("mhaon", "");
-                          }
-                        }}
-                      />
-
-
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Not Applicable
-                      </FormLabel>
-
-                    </div>
-                  </div>
-
-
-                </FormItem>
-              )}
+              label="Legal Guardian Information"
+              unknownLabel="Not Applicable"
+              checked={lUnknown}
+              onCheckedChange={(isChecked) => {
+                if (isChecked) {
+                  form.setValue("legalGname", "");
+                  form.setValue("legalGprofession", "");
+                  form.setValue("legalGnationality", "");
+                  form.setValue("mhaon", "");
+                }
+              }}
             />
 
             <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 p-4 rounded-md mb-6">
@@ -438,100 +304,10 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
 
             {/* legal */}
 
-            <FormField
-              control={form.control}
-              name="legalGname"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Legal Guardian's name (as per NID/BRC)</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={lUnknown}
-                      className="w-11/12 lg:w-2/3"
-                      placeholder="Legal Guardian Name"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setIsSubmitted(false);
-                      }}
-                    />
-                  </FormControl>
-                  {isSubmitted && <FormMessage />}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="legalGprofession"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Profession</FormLabel>
-                  <Select disabled={lUnknown} onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-[180px] border-input">
-                        <SelectValue placeholder="Select Profession" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-popover text-popover-foreground">
-                      <SelectItem value="Service">Service</SelectItem>
-                      <SelectItem value="Business">Business</SelectItem>
-                      <SelectItem value="Teacher">Teacher</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {isSubmitted && <FormMessage className="text-destructive" />}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="legalGnationality"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Select Nationality</FormLabel>
-                  <Select disabled={lUnknown} onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-[180px] border-input">
-                        <SelectValue placeholder="Select Nationality" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-popover text-popover-foreground">
-                      <SelectItem value="Bangladeshi">Bangladeshi</SelectItem>
-                      <SelectItem value="Indian">Indian</SelectItem>
-                      <SelectItem value="American">American</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {isSubmitted && <FormMessage className="text-destructive" />}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="mhaon"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">Ministry of Home Affairs Order Number</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={lUnknown}
-                      placeholder=""
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setIsSubmitted(false);
-                      }}
-                      className="w-full md:w-2/3"
-                    // maxLength={10}
-                    />
-                  </FormControl>
-                  {isSubmitted && <FormMessage className="text-destructive" />}
-                </FormItem>
-              )}
-            />
+            {renderTextField("legalGname", "Legal Guardian's name (as per NID/BRC)", "Legal Guardian Name", "w-11/12 lg:w-2/3", lUnknown)}
+            {renderSelectField("legalGprofession", "Select Profession", "Select Profession", PROFESSION_OPTIONS, lUnknown)}
+            {renderSelectField("legalGnationality", "Select Nationality", "Select Nationality", NATIONALITY_OPTIONS, lUnknown)}
+            {renderTextField("mhaon", "Ministry of Home Affairs Order Number", "", "w-full md:w-2/3", lUnknown)}
  
             <div className="pt-4">
               <Button type="submit"
