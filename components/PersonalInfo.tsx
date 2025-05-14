@@ -186,7 +186,7 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
             name={name}
             render={({ field }) => (
                 <FormItem className="w-full">
-                    <FormLabel className='font-normal text-foreground text-sm md:text-md lg:text-lg'>{label}</FormLabel>
+                    <FormLabel className='text-foreground text-sm md:text-md lg:text-lg'>{label}</FormLabel>
                     <FormControl>
                         <Input
                             className="w-11/12 lg:w-2/3"

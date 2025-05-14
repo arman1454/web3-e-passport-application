@@ -14,6 +14,7 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Button } from './ui/button';
 import { z } from 'zod';
+import { Skeleton } from './ui/skeleton';
 
 type FormValues = z.infer<typeof spouseInfoFormSchema>;
 
@@ -118,7 +119,6 @@ const renderTextField = (
   name: keyof FormValues,
   label: string,
   placeholder: string,
-  className?: string,
 ) => (
   <FormField
     control={form.control}
@@ -129,11 +129,11 @@ const renderTextField = (
         safeValue = '';
       }
       return (
-        <FormItem className={className || "w-full"}>
+        <FormItem className="w-full">
           <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel>
           <FormControl>
             <Input
-              className={className || "w-full md:w-2/3"}
+              className="w-11/12 lg:w-2/3"
               placeholder={placeholder}
               {...field}
               value={safeValue}
@@ -160,7 +160,7 @@ const renderSelectField = (
     control={form.control}
     name={name}
     render={({ field }) => (
-      <FormItem>
+      <FormItem className="w-full md:w-2/3">
         <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel>
         <Select onValueChange={field.onChange} value={field.value}>
           <FormControl>
@@ -181,7 +181,13 @@ const renderSelectField = (
 );
 
   if (!hydrated) {
-    return <p>Loading...</p>;
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-full" />
+      </div>
+    );
   }
   return (
     <Card>

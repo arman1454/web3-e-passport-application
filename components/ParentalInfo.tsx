@@ -108,7 +108,7 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
     goToNextForm();
   }, [updateFormData, goToNextForm]);
 
-  const renderTextField = (name: keyof FormValues, label: string, placeholder: string, className?: string, disabled?: boolean) => (
+  const renderTextField = (name: keyof FormValues, label: string, placeholder: string, disabled?: boolean) => (
     <FormField
       control={form.control}
       name={name}
@@ -119,12 +119,12 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
           safeValue = '';
         }
         return (
-          <FormItem className={className || "w-full"}>
+          <FormItem className="w-full">
             <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel>
             <FormControl>
               <Input
                 disabled={disabled}
-                className={className || "w-1/2"}
+                className="w-11/12 lg:w-2/3"
                 placeholder={placeholder}
                 {...field}
                 value={safeValue}
@@ -252,10 +252,10 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
                 }
               }}
             />
-            {renderTextField("fatherName", "Father Name", "Enter Father Name", "w-1/2", fUnknown)}
+            {renderTextField("fatherName", "Father Name", "Enter Father Name", fUnknown)}
             {renderSelectField("fatherProfession", "Father Profession", "Select Profession", PROFESSION_OPTIONS, fUnknown)}
             {renderSelectField("fatherNationality", "Father Nationality", "Select Nationality", NATIONALITY_OPTIONS, fUnknown)}
-            {renderTextField("fatherNid", "National ID No. (optional)", "Enter your 10-digit national ID", "w-full md:w-2/3", fUnknown)}
+            {renderTextField("fatherNid", "National ID No. (optional)", "Enter your 10-digit national ID", fUnknown)}
           
           {/* mother */}
 
@@ -275,10 +275,10 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
               }}
             />    
 
-          {renderTextField("motherName", "Mother Name", "Enter Mother Name", "w-1/2", mUnknown)}
+          {renderTextField("motherName", "Mother Name", "Enter Mother Name", mUnknown)}
           {renderSelectField("motherProfession", "Mother Profession", "Select Profession", PROFESSION_OPTIONS, mUnknown)}
           {renderSelectField("motherNationality", "Mother Nationality", "Select Nationality", NATIONALITY_OPTIONS, mUnknown)}
-          {renderTextField("motherNid", "National ID No. (optional)", "Enter your 10-digit national ID", "w-full md:w-2/3", mUnknown)}
+          {renderTextField("motherNid", "National ID No. (optional)", "Enter your 10-digit national ID", mUnknown)}
 
             {/* Legal Guardian */}
             <CheckboxGroup
@@ -304,10 +304,10 @@ const ParentalInfo = ({ goToNextForm }: ParentalInfoProps) => {
 
             {/* legal */}
 
-            {renderTextField("legalGname", "Legal Guardian's name (as per NID/BRC)", "Legal Guardian Name", "w-11/12 lg:w-2/3", lUnknown)}
+            {renderTextField("legalGname", "Legal Guardian's name (as per NID/BRC)", "Legal Guardian Name", lUnknown)}
             {renderSelectField("legalGprofession", "Select Profession", "Select Profession", PROFESSION_OPTIONS, lUnknown)}
             {renderSelectField("legalGnationality", "Select Nationality", "Select Nationality", NATIONALITY_OPTIONS, lUnknown)}
-            {renderTextField("mhaon", "Ministry of Home Affairs Order Number", "", "w-full md:w-2/3", lUnknown)}
+            {renderTextField("mhaon", "Ministry of Home Affairs Order Number", "", lUnknown)}
  
             <div className="pt-4">
               <Button type="submit"

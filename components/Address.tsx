@@ -127,7 +127,7 @@ const Address = ({ goToNextForm }: AddressProps) => {
                     <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">{label}</FormLabel> {/* Updated to match the original className */}
                     <FormControl>
                         <Input
-                            className="w-1/2 text-sm md:text-md lg:text-lg" // Added missing Tailwind classes
+                            className="w-11/12 lg:w-2/3" // Added missing Tailwind classes
                             placeholder={placeholder}
                             {...field}
                             value={typeof field.value === 'string' ? field.value : ''}

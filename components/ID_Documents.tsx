@@ -225,14 +225,14 @@ const ID_Documents = ({ goToNextForm }: ID_DocumentsProps) => {
                 <FormItem>
                   <FormLabel className="text-foreground text-sm md:text-md lg:text-lg">National ID Number</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
+                      className="w-11/12 lg:w-2/3" 
                       placeholder="Enter your 10-digit national ID" 
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
                         setIsSubmitted(false);
                       }} 
-                      className="w-full md:w-2/3"
                       // maxLength={10}
                     />
                   </FormControl>
