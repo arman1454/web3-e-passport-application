@@ -170,7 +170,22 @@ const PersonalInfo = ({ goToNextForm }: PersonalInfoProps) => {
 
     // Memoize the submit handler to prevent recreation on each render
     const onSubmit = useCallback((values: PersonalInfo_Inf) => {
-        updateFormData('personalInfo', values);
+        // Convert birthDate to YYYY-MM-DD string in local time (not UTC)
+        let birthDateStr = null;
+        if (values.birthDate instanceof Date && !isNaN(values.birthDate.getTime())) {
+            // Get local date parts
+            const year = values.birthDate.getFullYear();
+            const month = (values.birthDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = values.birthDate.getDate().toString().padStart(2, '0');
+            birthDateStr = `${year}-${month}-${day}`;
+        } else if (typeof values.birthDate === 'string') {
+            birthDateStr = values.birthDate;
+        }
+        const formattedValues: PersonalInfo_Inf = {
+            ...values,
+            birthDate: birthDateStr as any // Fix TS error: birthDate is string|null, but type expects Date|null
+        };
+        updateFormData('personalInfo', formattedValues);
         goToNextForm();
     }, [updateFormData, goToNextForm]);
 
