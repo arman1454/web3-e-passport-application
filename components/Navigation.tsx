@@ -51,19 +51,6 @@ const Navigation: FC = (props) => {
         
     ]
 
-    // const menuItems = [
-    //   "Profile",
-    //   "Dashboard",
-    //   "Activity",
-    //   "Analytics",
-    //   "System",
-    //   "Deployments",
-    //   "My Settings",
-    //   "Team Settings",
-    //   "Help & Feedback",
-    //   "Log Out",
-    // ];
-
     return (
         <Navbar onMenuOpenChange={setIsMenuOpen} className="bg-card">
             <NavbarContent className="flex gap-12">
