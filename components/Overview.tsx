@@ -3,6 +3,9 @@ import { Button } from './ui/button'
 import { useFormStore } from '@/app/store'
 import { sha256 } from 'js-sha256'
 import axios from 'axios'
+import { useMintPassportNFT } from './useMintPassportNFT';
+
+const CONTRACT_ADDRESS = '0x129A04E9E5aAdBc2bd933D9CE90b481d7E6d07c4';
 
 const Overview = () => {
   const formData = useFormStore((state) => state.formData);
@@ -10,6 +13,15 @@ const Overview = () => {
   const [imageFile, setImageFile] = useState<File|null>(null);
   const [metadataUrl, setMetadataUrl] = useState<string|null>(null);
   const [loading,setLoading] = useState(false);
+  const {
+    mint,
+    isLoading: minting,
+    isSuccess: mintSuccess,
+    error: mintError,
+    txHash,
+    etherscanUrl,
+  } = useMintPassportNFT(CONTRACT_ADDRESS);
+  const [showModal, setShowModal] = useState(false);
 
   // Recursively sort object keys for consistent hashing
   function normalize(obj: any): any {
@@ -62,7 +74,6 @@ const Overview = () => {
 
   async function handleCreateToken() {
     setLoading(true)
-
     try {
       const allowedSections = [
         'passportType',
@@ -97,7 +108,8 @@ const Overview = () => {
 
       const metadataLink = await uploadMetadataToIPFS(metadata);
       setMetadataUrl(metadataLink);
-
+      // Mint NFT after metadata is uploaded
+      mint(metadataLink);
     } catch (err) {
       console.error('Error creating token:', err)
       alert('Error uploading to IPFS. Check console for details.')
@@ -107,6 +119,13 @@ const Overview = () => {
     // Only include personal sections up to Emergency Contact (in order)
     
   }
+
+  // Show modal only after mintSuccess
+  React.useEffect(() => {
+    if (mintSuccess) {
+      setShowModal(true);
+    }
+  }, [mintSuccess]);
 
   return (
     <div className='bg-card flex items-center justify-center min-h-screen'>
@@ -172,6 +191,28 @@ const Overview = () => {
             >
               {metadataUrl}
             </a>
+          </div>
+        )}
+
+        {/* Minting Success Modal */}
+        {showModal && (
+          <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
+            <div className='bg-white p-6 rounded shadow-lg max-w-md w-full'>
+              <h3 className='text-lg font-bold mb-2'>NFT Minted!</h3>
+              {imageFile && (
+                <img src={URL.createObjectURL(imageFile)} alt='NFT' className='mb-4 max-h-48 mx-auto' />
+              )}
+              {metadataUrl && (
+                <div className='mb-2'>
+                  <span className='font-semibold'>IPFS Metadata: </span>
+                  <a href={metadataUrl} target='_blank' rel='noopener noreferrer' className='text-blue-600 underline break-all text-xs'>{metadataUrl}</a>
+                </div>
+              )}
+              {etherscanUrl && (
+                <a href={etherscanUrl} target='_blank' rel='noopener noreferrer' className='text-blue-600 underline block mb-2'>View on Etherscan</a>
+              )}
+              <Button onClick={() => setShowModal(false)} className='w-full mt-2'>Close</Button>
+            </div>
           </div>
         )}
       </div>
