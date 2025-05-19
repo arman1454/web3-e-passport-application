@@ -3,6 +3,18 @@ import { Button } from './ui/button'
 import { useFormStore } from '@/app/store'
 import { sha256 } from 'js-sha256'
 import axios from 'axios'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Progress } from "@heroui/react";
+import { Spinner } from "@heroui/react";
+
 import { useMintPassportNFT } from './useMintPassportNFT';
 
 const CONTRACT_ADDRESS = '0x129A04E9E5aAdBc2bd933D9CE90b481d7E6d07c4';
@@ -10,9 +22,10 @@ const CONTRACT_ADDRESS = '0x129A04E9E5aAdBc2bd933D9CE90b481d7E6d07c4';
 const Overview = () => {
   const formData = useFormStore((state) => state.formData);
   const [hash, setHash] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [metadataUrl, setMetadataUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File|null>(null);
+  const [metadataUrl, setMetadataUrl] = useState<string|null>(null);
+  const [loading,setLoading] = useState(false);
+  const [metadataStatus, setMetadataStatus] = useState(false);
   const {
     mint,
     isLoading: minting,
@@ -38,16 +51,16 @@ const Overview = () => {
     return obj;
   }
 
-  async function uploadImageToIPFS(file: File): Promise<string> {
+  async function uploadImageToIPFS(file:File): Promise<string>{
     const formData = new FormData()
-    formData.append('file', file);
+    formData.append('file',file);
 
     const res = await axios.post(
       'https://api.pinata.cloud/pinning/pinFileToIPFS',
       formData,
       {
-        maxContentLength: Infinity,
-        headers: {
+        maxContentLength:Infinity,
+        headers:{
           'Content-Type': 'multipart/form-data',
           pinata_api_key: process.env.NEXT_PUBLIC_PINATA_API_KEY!,
           pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY!,
@@ -58,12 +71,12 @@ const Overview = () => {
     return `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`
   }
 
-  async function uploadMetadataToIPFS(metadata: object): Promise<string> {
+  async function uploadMetadataToIPFS(metadata:object):Promise<string>{
     const res = await axios.post(
       'https://api.pinata.cloud/pinning/pinJSONToIPFS',
       metadata,
       {
-        headers: {
+        headers:{
           pinata_api_key: process.env.NEXT_PUBLIC_PINATA_API_KEY!,
           pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY!,
         },
@@ -93,7 +106,7 @@ const Overview = () => {
       setHash(hashValue);
 
       let imageUrl = null;
-      if (imageFile) {
+      if(imageFile){
         imageUrl = await uploadImageToIPFS(imageFile);
       }
 
@@ -108,6 +121,7 @@ const Overview = () => {
 
       const metadataLink = await uploadMetadataToIPFS(metadata);
       setMetadataUrl(metadataLink);
+      setMetadataStatus(true);
       // Mint NFT after metadata is uploaded
       mint(metadataLink);
     } catch (err) {
@@ -117,7 +131,7 @@ const Overview = () => {
       setLoading(false)
     }
     // Only include personal sections up to Emergency Contact (in order)
-
+    
   }
 
   // Show modal only after mintSuccess
@@ -169,9 +183,7 @@ const Overview = () => {
           ))}
         </div>
         {/* Create Token Button */}
-        <Button className='mt-6' onClick={handleCreateToken} disabled={loading}>
-          {loading ? 'Uploading...' : 'Create Token'}
-        </Button>
+        
         {hash && (
           <div className='mt-6 w-full break-all bg-muted p-4 rounded'>
             <div className='font-semibold mb-2'>Data Hash (SHA-256):</div>
@@ -194,27 +206,48 @@ const Overview = () => {
           </div>
         )}
 
-        {/* Minting Success Modal */}
-        {showModal && (
-          <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
-            <div className='bg-white p-6 rounded shadow-lg max-w-md w-full'>
-              <h3 className='text-lg font-bold mb-2'>NFT Minted!</h3>
-              {imageFile && (
-                <img src={URL.createObjectURL(imageFile)} alt='NFT' className='mb-4 max-h-48 mx-auto' />
-              )}
-              {metadataUrl && (
-                <div className='mb-2'>
-                  <span className='font-semibold'>IPFS Metadata: </span>
-                  <a href={metadataUrl} target='_blank' rel='noopener noreferrer' className='text-blue-600 underline break-all text-xs'>{metadataUrl}</a>
-                </div>
-              )}
-              {etherscanUrl && (
-                <a href={etherscanUrl} target='_blank' rel='noopener noreferrer' className='text-blue-600 underline block mb-2'>View on Etherscan</a>
-              )}
-              <Button onClick={() => setShowModal(false)} className='w-full mt-2'>Close</Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className='mt-6' onClick={handleCreateToken} disabled={loading}>
+              {loading ? 'Uploading...' : 'Create Token'}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit profile</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              {!metadataStatus && <Spinner classNames={{ label: "text-foreground mt-4" }} label="wave" variant="wave" />}
+              {metadataStatus && !mintSuccess && <Spinner classNames={{label: "text-foreground mt-4"}} label="dots" variant="dots" />}
+              {!txHash && <Progress isIndeterminate aria-label="Loading..." className="max-w-md" size="sm" />}
+              {showModal && <div className='p-6 rounded shadow-lg max-w-md w-full'>
+                <h3 className='text-lg font-bold mb-2'>NFT Minted!</h3>
+                {imageFile && (
+                  <img src={URL.createObjectURL(imageFile)} alt='NFT' className='mb-4 max-h-48 mx-auto' />
+                )}
+                {metadataUrl && (
+                  <div className='mb-2'>
+                    <span className='font-semibold'>IPFS Metadata: </span>
+                    <a href={metadataUrl} target='_blank' rel='noopener noreferrer' className='text-blue-600 underline break-all text-xs'>{metadataUrl}</a>
+                  </div>
+                )}
+                {etherscanUrl && (
+                  <a href={etherscanUrl} target='_blank' rel='noopener noreferrer' className='text-blue-600 underline block mb-2'>View on Etherscan</a>
+                )}
+              </div>}  
+            
             </div>
-          </div>
-        )}
+
+              
+
+            <DialogFooter>
+              <Button type="submit">Save changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

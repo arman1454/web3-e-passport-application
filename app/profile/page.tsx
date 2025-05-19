@@ -41,7 +41,7 @@ export default function DialogDemo() {
             
         <Dialog>
                 <DialogTrigger asChild>
-                    <Button onClick={task1} variant="outline">Edit Profile</Button>
+                    <Button variant="outline">Edit Profile</Button>
                 </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
