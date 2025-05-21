@@ -14,6 +14,7 @@ export function useMintPassportNFT(contractAddress: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<any>(null);
+  const [stage, setStage] = useState<'idle'|'wallet'|'mining'|'done'>('idle');
 
   const { writeContractAsync } = useWriteContract();
 
@@ -23,6 +24,7 @@ export function useMintPassportNFT(contractAddress: string) {
     setIsLoading(true);
     setIsSuccess(false);
     setError(null);
+    setStage('wallet'); // Waiting for wallet confirmation
     try {
       const txHash = await writeContractAsync({
         address: contractAddress as `0x${string}`,
@@ -32,13 +34,16 @@ export function useMintPassportNFT(contractAddress: string) {
         chainId: chain?.id,
       });
       setTxHash(txHash);
+      setStage('mining'); // User confirmed, now mining
       // Wait for confirmation
       await waitForTransactionReceipt(config, { hash: txHash, chainId: chain?.id });
       setIsSuccess(true);
       setEtherscanUrl(`https://holesky.etherscan.io/tx/${txHash}`);
+      setStage('done');
       // Optionally parse logs for tokenId here
     } catch (err) {
       setError(err);
+      setStage('idle');
     } finally {
       setIsLoading(false);
     }
@@ -52,5 +57,6 @@ export function useMintPassportNFT(contractAddress: string) {
     txHash,
     etherscanUrl,
     mintedTokenId,
+    stage,
   };
 }
