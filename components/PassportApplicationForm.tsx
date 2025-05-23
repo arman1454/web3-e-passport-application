@@ -136,7 +136,6 @@ export default function PassportApplicationForm() {
     };
 
     const ActiveComponent = formComponents[active] || Overview;
-
     return (
         <>
             <div className="flex flex-col items-center gap-4 text-center pb-8 pt-6 lg:p-10">
@@ -192,7 +191,9 @@ export default function PassportApplicationForm() {
                 </Drawer>
 
                 {/* Sidebar for Larger Screens */}
-                <Card className="hidden lg:block bg-card text-card-foreground border-border top-2">
+                {!(active === "Overview")&&
+                
+                (<Card className="hidden lg:block bg-card text-card-foreground border-border top-2">
                     {items.map((item, key) => (
                         <CardBody key={key}>
                             <Button
@@ -205,10 +206,10 @@ export default function PassportApplicationForm() {
                             </Button>
                         </CardBody>
                     ))}
-                </Card>
-
+                </Card>)
+}
                 {/* Content Section */}
-                <div className="w-full lg:w-1/2 px-12 lg:px-4 overflow-hidden lg:py-2">
+                <div className={`w-full lg:w-1/2 ${active === "Overview" ? "px-2 lg:px-0" : "px-12"} lg:px-4 overflow-hidden lg:py-2`}>
                     <Suspense fallback={
                         <div className="flex flex-col items-center space-y-8">
                             

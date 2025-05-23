@@ -1,0 +1,132 @@
+
+               
+                
+      
+      {/* Spouse Info */}
+      <Card className='w-1/2'>
+        <CardHeader className='flex items-center flex-row justify-between'>
+          <CardTitle >Spouse Information</CardTitle>
+          <Button>Edit</Button>
+        </CardHeader>
+        <CardContent className='flex flex-col items-center justify-center space-y-6'>
+
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Marital Status</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Spouse's name (as per NID/BRC)</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Profession</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Nationality</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+
+        </CardContent>
+      </Card>
+      
+      {/* Emergency Contact */}
+
+      <Card className='w-1/2'>
+        <CardHeader className='flex items-center flex-row justify-between'>
+          <CardTitle >Emergency Contact</CardTitle>
+          <Button>Edit</Button>
+        </CardHeader>
+        <CardContent className='space-y-6'>
+          <div className='space-y-6'>
+            <div className='grid grid-cols-[180px_1fr] gap-40'>
+              <h1>Emergency Contact relationship</h1>
+              <h1>Fakid Arman</h1>
+            </div>
+            <div className='grid grid-cols-[180px_1fr] gap-40'>
+              <h1>Name (as per NID/BRC)</h1>
+              <h1>Fakid Arman</h1>
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <h1 className="mr-4 whitespace-nowrap">Address</h1>
+            <div className="flex-1 border-t border-gray-400"></div>
+          </div>
+          <div className="grid grid-cols-2 gap-x-12">
+            {/* Permanent Address */}
+           
+              
+              <div className="space-y-4">
+                {fields2.map((label, idx) => (
+                  <div className="grid grid-cols-[180px_1fr] gap-12" key={`permanent-${idx}`}>
+                    <span className="text-sm text-muted-foreground">{label}</span>
+                    <span className="text-sm">something</span>
+                  </div>
+                ))}
+              </div>
+           
+
+            {/* Present Address */}
+            
+              
+              <div className="space-y-4">
+                {fields3.map((label, idx) => (
+                  <div className="grid grid-cols-[180px_1fr] gap-12" key={`present-${idx}`}>
+                    <span className="text-sm text-muted-foreground">{label}</span>
+                    <span className="text-sm">something</span>
+                  </div>
+                ))}
+              </div>
+            
+          </div>
+        </CardContent>
+      </Card>
+      {/* Passport Options */}
+      <Card className='w-1/2'>
+        <CardHeader className='flex items-center flex-row justify-between'>
+          <CardTitle >Passport Options</CardTitle>
+          <Button>Edit</Button>
+        </CardHeader>
+        <CardContent className='flex flex-col items-center justify-center space-y-6'>
+          
+            <div className='grid grid-cols-[180px_1fr] gap-40'>
+              <h1>Validity</h1>
+              <h1>Fakid Arman</h1>
+            </div>
+            <div className='grid grid-cols-[180px_1fr] gap-40'>
+              <h1>Passport Price</h1>
+              <h1>Fakid Arman</h1>
+            </div>
+          
+        </CardContent>
+      </Card>
+      
+      {/* Delivery Options and appointment */}
+
+      <Card className='w-1/2'>
+        <CardHeader className='flex items-center flex-row justify-between'>
+          <CardTitle >Delivery Options and Appointment</CardTitle>
+          <Button>Edit</Button>
+        </CardHeader>
+        <CardContent className='flex flex-col items-center justify-center space-y-6'>
+
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Delivery Type</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Delivery Fee</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Appointment Date</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+          <div className='grid grid-cols-[180px_1fr] gap-40'>
+            <h1>Appointment Time</h1>
+            <h1>Fakid Arman</h1>
+          </div>
+
+        </CardContent>
+      </Card>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button'
 import { useFormStore } from '@/app/store'
 import { sha256 } from 'js-sha256'
@@ -14,12 +14,32 @@ import {
 } from "@/components/ui/dialog"
 import { Progress } from "@heroui/react";
 import { Spinner } from "@heroui/react";
-
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useMintPassportNFT } from './useMintPassportNFT';
 
 const CONTRACT_ADDRESS = '0x129A04E9E5aAdBc2bd933D9CE90b481d7E6d07c4';
 
 const Overview = () => {
+  const fields = [
+    "District",
+    "City/Village/House",
+    "Road/Block/Sector",
+    "Post Office",
+    "Postal code",
+    "Police Station",
+  ]
+  const fields2 = [
+    "Father's name(as per NID/BRC)",
+    "Profession",
+    "Nationality"
+  ]
+  const fields3 = [
+    "Mother's name(as per NID/BRC)",
+    "Profession",
+    "Nationality"
+  ]
+
+
   const formData = useFormStore((state) => state.formData);
   const [hash, setHash] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File|null>(null);
@@ -40,6 +60,8 @@ const Overview = () => {
   // Recursively sort object keys for consistent hashing
   function normalize(obj: any): any {
     if (Array.isArray(obj)) {
+      console.log(formData);
+      
       return obj.map(normalize);
     } else if (obj && typeof obj === 'object' && !(obj instanceof Date)) {
       return Object.keys(obj)
@@ -51,6 +73,11 @@ const Overview = () => {
     }
     return obj;
   }
+
+  // useEffect(()=>{
+  //   console.log(formData);
+    
+  // },[])
 
   async function uploadImageToIPFS(file:File): Promise<string>{
     const formData = new FormData()
@@ -151,12 +178,157 @@ const Overview = () => {
   }, [mintSuccess]);
 
   return (
-    <div className='bg-card flex items-center justify-center min-h-screen'>
-      <div className='w-full max-w-2xl bg-card flex flex-col items-center justify-center rounded-lg p-8 shadow-md'>
-        <h2 className='text-2xl font-bold mb-6'>Application Overview</h2>
+    <div className="space-y-8 text-card-foreground shadow-small rounded-large">
+                <CardHeader>
+                    <CardTitle className='text-foreground text-lg lg:text-xl font-bold'>Personal Information</CardTitle>
+                </CardHeader>
 
        
-        <div className='w-full space-y-4 text-left'>
+        {/* Personal Info */}
+        <Card >
+          <CardHeader className='flex items-center flex-row justify-between'>
+            <CardTitle className='text-base lg:text-lg'>Personal Information</CardTitle>
+            <Button>Edit</Button>
+          </CardHeader>
+          <CardContent className='space-y-8'>
+            <div className='flex flex-col items-center justify-center space-y-6 text-sm md:text-base lg:text-lg'>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Gender</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Full Name(as Per NID/BRC)</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>First Name</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Sur Name</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Profession</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Religion</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Contact Number</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+            </div>
+
+            <div className="flex items-center">
+              <h1 className="mr-4 whitespace-nowrap">Birth Data</h1>
+              <div className="flex-1 border-t border-gray-400"></div>
+            </div>
+            <div className='flex flex-col items-center justify-center space-y-6 text-sm md:text-base lg:text-lg'>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Country Of Birth</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Country Code</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>District of Birth</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Birth Date</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+              <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40'>
+                <h1>Citizenship Type</h1>
+                <h1>Fakid Arman</h1>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Address */}
+        <Card>
+          <CardHeader className="flex items-center flex-row justify-between">
+          <CardTitle className='text-base lg:text-lg'>Address</CardTitle>
+            <Button>Edit</Button>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
+              {/* Permanent Address */}
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <h1 className="mr-4 whitespace-nowrap text-sm font-semibold">Permanent Address</h1>
+                  <div className="flex-1 border-t border-gray-400" />
+                </div>
+                <div className="space-y-4 flex flex-col items-center lg:flex-none lg:flex-row-none lg:items-start">
+                  {fields.map((label, idx) => (
+                    <div className="grid grid-cols-[180px_1fr] gap-12" key={`permanent-${idx}`}>
+                      <span className="text-sm text-muted-foreground">{label}</span>
+                      <span className="text-sm">something</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Present Address */}
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <h1 className="mr-4 whitespace-nowrap text-sm font-semibold">Present Address</h1>
+                  <div className="flex-1 border-t border-gray-400" />
+                </div>
+                <div className="space-y-4 flex flex-col items-center lg:flex-none lg:items-start">
+                  {fields.map((label, idx) => (
+                    <div className="grid grid-cols-[180px_1fr] gap-12" key={`present-${idx}`}>
+                      <span className="text-sm text-muted-foreground">{label}</span>
+                      <span className="text-sm">something</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+         {/* ID Docs */}
+               <Card>
+                 <CardHeader className='flex items-center flex-row justify-between'>
+                   <CardTitle className='text-base lg:text-lg'>ID Documents</CardTitle>
+                   <Button>Edit</Button>
+                 </CardHeader>
+                 <CardContent className='space-y-3'>
+                   <div className='space-y-12'>
+                     <div className="space-y-12">
+                       <div className="flex items-center">
+                         <h1 className="mr-4 whitespace-nowrap">NID/BRC</h1>
+                         <div className="flex-1 border-t border-gray-400"></div>
+                       </div>
+                       <div className='grid grid-cols-[180px_1fr] gap-12 text-sm md:text-base lg:text-lg'>
+                         <h1>National ID No.</h1>
+                         <h1>Fakid Arman</h1>
+                       </div>
+                     </div>
+         
+                     <div className="space-y-12">
+                       <div className="flex items-center">
+                         <h1 className="mr-4 whitespace-nowrap">Dual Citizenship</h1>
+                         <div className="flex-1 border-t border-gray-400"></div>
+                       </div>
+                       <div className='grid grid-cols-[180px_1fr] gap-12 text-sm md:text-base lg:text-lg'>
+                         <h1>Dual Citizenship</h1>
+                         <h1>Fakid Arman</h1>
+                       </div>
+                     </div>
+                   </div>
+                 </CardContent>
+               </Card>         
+        
+
+        {/* <div className='w-full space-y-4 text-left'>
           {Object.entries(formData).map(([section, data]) => (
             <div key={section} className='border-b pb-4 mb-4'>
               <h3 className='text-lg font-semibold capitalize mb-2'>{section.replace(/([A-Z])/g, ' $1')}</h3>
@@ -182,7 +354,7 @@ const Overview = () => {
               </ul>
             </div>
           ))}
-        </div>
+        </div> */}
         {/* Create Token Button */}
         
         {hash && (
@@ -263,7 +435,7 @@ const Overview = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
+      
     </div>
   );
 }
