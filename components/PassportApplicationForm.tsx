@@ -146,9 +146,20 @@ export default function PassportApplicationForm() {
                     </Badge>
                     <CustomConnectButton />
                 </div>
-                <div className="pt-8 lg:pt-0 w-11/12 sm:w-full">
-                    <Label className="lg:text-lg text-foreground font-sans">Please fill in all required information step by step in each section.</Label>
-                </div>
+                {active === "Overview" ? (
+                    <div className="pt-8 lg:pt-0 w-11/12 sm:w-full">
+                        <Label className="lg:text-xl text-foreground font-sans">
+                            Please give a Final check and Proceed to creating the NFT
+                        </Label>
+                    </div>
+                ) : (
+                    <div className="pt-8 lg:pt-0 w-11/12 sm:w-full">
+                        <Label className="lg:text-lg text-foreground font-sans">
+                            Please fill in all required information step by step in each section.
+                        </Label>
+                    </div>
+                )}
+
 
             </div>
             <div className="flex flex-col lg:flex-row items-start lg:justify-center gap-10">
@@ -209,7 +220,7 @@ export default function PassportApplicationForm() {
                 </Card>)
 }
                 {/* Content Section */}
-                <div className={`w-full lg:w-1/2 ${active === "Overview" ? "px-2 lg:px-0" : "px-12"} lg:px-4 overflow-hidden lg:py-2`}>
+                <div className={`w-full lg:w-1/2 ${active === "Overview" ? "lg:w-3/5 px-2 lg:px-0 lg:py-0" : "px-12"} lg:px-4 overflow-hidden lg:py-2`}>
                     <Suspense fallback={
                         <div className="flex flex-col items-center space-y-8">
                             
