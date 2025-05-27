@@ -253,25 +253,20 @@ const page = () => {
       </Card>
 
       {/* ID Docs */}
-      <Card>
-        <CardHeader className='flex items-center flex-row justify-between'>
-          <CardTitle className='text-base lg:text-xl'>ID Documents</CardTitle>
+      <Card className="shadow-sm rounded-xl p-6 bg-card">
+        <div className="flex items-center justify-between mb-4">
+          <CardTitle className="text-base lg:text-xl font-semibold">ID Documents</CardTitle>
           <Button>Edit</Button>
-        </CardHeader>
-        <CardContent className='space-y-8'>
-          <div className='mx-auto w-full max-w-2xl'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm md:text-base lg:text-lg'>
-              {idDocumentAllLabels.map(({ label, key }) => (
-                <React.Fragment key={label}>
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-muted-foreground font-medium">{label}</span>
-                    <span className="font-semibold text-right">{(formDatas.idDocuments as any)[key] || <span className="italic text-muted-foreground">N/A</span>}</span>
-                  </div>
-                </React.Fragment>
-              ))}
+        </div>
+        <div className="border-t border-border mb-4" />
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
+          {idDocumentAllLabels.map(({ label, key }) => (
+            <div key={key}>
+              <span className="text-muted-foreground">{label}</span>
+              <div className="font-bold">{(formDatas.idDocuments as any)[key] || <span className="italic text-muted-foreground">N/A</span>}</div>
             </div>
-          </div>
-        </CardContent>
+          ))}
+        </div>
       </Card>
 
       {/* Parental Info */}
@@ -322,30 +317,27 @@ const page = () => {
       </Card>
 
       {/* Spouse Info */}
-      <Card>
-        <CardHeader className='flex items-center flex-row justify-between'>
-          <CardTitle className='text-base lg:text-xl'>Spouse Information</CardTitle>
+      <Card className="shadow-sm rounded-xl p-6 bg-card">
+        <div className="flex items-center justify-between mb-4">
+          <CardTitle className="text-base lg:text-xl font-semibold">Spouse Information</CardTitle>
           <Button>Edit</Button>
-        </CardHeader>
-        <CardContent className='flex flex-col items-center justify-center space-y-6'>
-          <div className='mx-auto w-full max-w-2xl'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm md:text-base lg:text-lg'>
-              {((formDatas.spouseInfo as any).maritalStatus === 'Single') ? (
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-muted-foreground font-medium">Marital Status</span>
-                  <span className="font-semibold text-right">Single</span>
-                </div>
-              ) : (
-                spouseInfoAllLabels.map(({ label, key }) => (
-                  <div className="flex justify-between items-center py-1" key={label}>
-                    <span className="text-muted-foreground font-medium">{label}</span>
-                    <span className="font-semibold text-right">{(formDatas.spouseInfo as any)[key] || <span className="italic text-muted-foreground">N/A</span>}</span>
-                  </div>
-                ))
-              )}
+        </div>
+        <div className="border-t border-border mb-4" />
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
+          {((formDatas.spouseInfo as any).maritalStatus === 'Single') ? (
+            <div>
+              <span className="text-muted-foreground">Marital Status</span>
+              <div className="font-bold">Single</div>
             </div>
-          </div>
-        </CardContent>
+          ) : (
+            spouseInfoAllLabels.map(({ label, key }) => (
+              <div key={key}>
+                <span className="text-muted-foreground">{label}</span>
+                <div className="font-bold">{(formDatas.spouseInfo as any)[key] || <span className="italic text-muted-foreground">N/A</span>}</div>
+              </div>
+            ))
+          )}
+        </div>
       </Card>
 
 
@@ -402,58 +394,51 @@ const page = () => {
       
 
       {/* Passport Options */}
-      <Card>
-        <CardHeader className='flex items-center flex-row justify-between'>
-          <CardTitle className='text-base lg:text-xl'>Passport Options</CardTitle>
+      <Card className="shadow-sm rounded-xl p-6 bg-card">
+        <div className="flex items-center justify-between mb-4">
+          <CardTitle className="text-base lg:text-xl font-semibold">Passport Options</CardTitle>
           <Button>Edit</Button>
-        </CardHeader>
-        <CardContent className='flex flex-col items-center justify-center space-y-6'>
+        </div>
+        <div className="border-t border-border mb-4" />
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
           {passportOptionsAllLabels.map(({label,key})=>(
-            <div className='grid grid-cols-[180px_1fr] gap-20 lg:gap-40 text-sm md:text-base lg:text-lg'>
-              <h1 className="text-muted-foreground">{label}</h1>
-              <h1>{(formDatas.passportOptions as any )[key]}</h1>
+            <div key={key}>
+              <span className="text-muted-foreground">{label}</span>
+              <div className="font-bold">{(formDatas.passportOptions as any )[key]}</div>
             </div>
-          ))}    
-          
-          
-
-        </CardContent>
+          ))}
+        </div>
       </Card>
 
 
       {/* Delivery Options and appointment */}
 
-      <Card>
-        <CardHeader className='flex items-center flex-row justify-between'>
-          <CardTitle className='text-base lg:text-xl'>Delivery Options and Appointment</CardTitle>
+      <Card className="shadow-sm rounded-xl p-6 bg-card">
+        <div className="flex items-center justify-between mb-4">
+          <CardTitle className="text-base lg:text-xl font-semibold">Delivery Options and Appointment</CardTitle>
           <Button>Edit</Button>
-        </CardHeader>
-        <CardContent>
-          <div className="mx-auto w-full max-w-2xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm md:text-base lg:text-lg">
-              {deliveryAndAppointmentLabels.map(({ label, key }) => {
-                let value: string | JSX.Element = '';
-                if (key === 'appointmentDate') {
-                  const dt = formDatas.deliveryAndAppointment.dateTime;
-                  value = dt ? new Date(dt).toLocaleDateString() : <span className="italic text-muted-foreground">N/A</span>;
-                } else if (key === 'appointmentTime') {
-                  const dt = formDatas.deliveryAndAppointment.dateTime;
-                  value = dt ? new Date(dt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : <span className="italic text-muted-foreground">N/A</span>;
-                } else {
-                  value = (formDatas.deliveryAndAppointment as any)[key] || <span className="italic text-muted-foreground">N/A</span>;
-                }
-                return (
-                  <React.Fragment key={key}>
-                    <div className="flex justify-between items-center py-1">
-                      <span className="text-muted-foreground font-medium text-right w-1/2 pr-4">{label}</span>
-                      <span className="font-semibold text-left w-1/2 pl-4">{value}</span>
-                    </div>
-                  </React.Fragment>
-                );
-              })}
-            </div>
-          </div>
-        </CardContent>
+        </div>
+        <div className="border-t border-border mb-4" />
+        <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
+          {deliveryAndAppointmentLabels.map(({ label, key }) => {
+            let value: string | JSX.Element = '';
+            if (key === 'appointmentDate') {
+              const dt = formDatas.deliveryAndAppointment.dateTime;
+              value = dt ? new Date(dt).toLocaleDateString() : <span className="italic text-muted-foreground">N/A</span>;
+            } else if (key === 'appointmentTime') {
+              const dt = formDatas.deliveryAndAppointment.dateTime;
+              value = dt ? new Date(dt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : <span className="italic text-muted-foreground">N/A</span>;
+            } else {
+              value = (formDatas.deliveryAndAppointment as any)[key] || <span className="italic text-muted-foreground">N/A</span>;
+            }
+            return (
+              <div key={key}>
+                <span className="text-muted-foreground">{label}</span>
+                <div className="font-bold">{value}</div>
+              </div>
+            );
+          })}
+        </div>
       </Card>   
 
 
