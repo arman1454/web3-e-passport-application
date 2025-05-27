@@ -42,9 +42,9 @@ const RELIGION_OPTIONS = [
 ];
 
 const COUNTRY_CODE_OPTIONS = [
-    { value: "BANGLADESH +880", label: "BANGLADESH +880" },
-    { value: "CYPRUS +357", label: "CYPRUS +357" },
-    { value: "HONGKONG +852", label: "HONGKONG +852" }
+    { value: "+880", label: "BANGLADESH +880" },
+    { value: "+357", label: "CYPRUS +357" },
+    { value: "+852", label: "HONGKONG +852" }
 ];
 
 const COUNTRY_OPTIONS = [
