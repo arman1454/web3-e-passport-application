@@ -16,6 +16,7 @@ import { Progress } from "@heroui/react";
 import { Spinner } from "@heroui/react";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useMintPassportNFT } from './useMintPassportNFT';
+import { format } from 'date-fns'
 
 const CONTRACT_ADDRESS = '0x129A04E9E5aAdBc2bd933D9CE90b481d7E6d07c4';
 
@@ -89,10 +90,10 @@ const Overview = () => {
     return obj;
   }
 
-  // useEffect(()=>{
-  //   console.log(formData);
+  useEffect(()=>{
+    console.log(formData);
     
-  // },[])
+  },[])
 
   async function uploadImageToIPFS(file:File): Promise<string>{
     const formData = new FormData()

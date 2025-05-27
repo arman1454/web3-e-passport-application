@@ -1,8 +1,25 @@
 
-               
+            const fields = [
+    "District",
+    "City/Village/House",
+    "Road/Block/Sector",
+    "Post Office",
+    "Postal code",
+    "Police Station",
+  ]
+  
+    
                 
       
+           
       
+            
+      
+            
+      
+            
+      
+               
       
       
 
