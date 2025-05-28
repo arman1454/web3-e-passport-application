@@ -38,7 +38,7 @@ export function useMintPassportNFT(contractAddress: string) {
       // Wait for confirmation
       await waitForTransactionReceipt(config, { hash: txHash, chainId: chain?.id });
       setIsSuccess(true);
-      setEtherscanUrl(`https://holesky.etherscan.io/tx/${txHash}`);
+      setEtherscanUrl(`https://sepolia.etherscan.io/tx/${txHash}`);
       setStage('done');
       // Optionally parse logs for tokenId here
     } catch (err) {

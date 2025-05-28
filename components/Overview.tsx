@@ -27,7 +27,7 @@ import {
   deliveryAndAppointmentLabels } from '@/app/cardLabels'
 
 
-const CONTRACT_ADDRESS = '0x129A04E9E5aAdBc2bd933D9CE90b481d7E6d07c4';
+const CONTRACT_ADDRESS = '0x161136Bd80495Eb0aD2FD818071bfd7E62860cf2';
 
 // Add prop type for onEditSection
 interface OverviewProps {
