@@ -231,7 +231,10 @@ export default function PassportApplicationForm() {
                             
                         </div>
                     }>
-                        <ActiveComponent goToNextForm={() => goToNextFormAndNavigate(storedIndex)} />
+                        <ActiveComponent 
+  goToNextForm={() => goToNextFormAndNavigate(storedIndex)}
+  {...(active === "Overview" ? { onEditSection: handleSidebarClick } : {})}
+                        />
                     </Suspense>
                 </div>
             </div>

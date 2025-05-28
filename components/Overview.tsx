@@ -29,7 +29,12 @@ import {
 
 const CONTRACT_ADDRESS = '0x129A04E9E5aAdBc2bd933D9CE90b481d7E6d07c4';
 
-const Overview = () => {
+// Add prop type for onEditSection
+interface OverviewProps {
+  onEditSection?: (index: number) => void;
+}
+
+const Overview: React.FC<OverviewProps> = ({ onEditSection }) => {
 
 
   const formData = useFormStore((state) => state.formData);
@@ -48,93 +53,6 @@ const Overview = () => {
     stage: mintStageFromHook,
   } = useMintPassportNFT(CONTRACT_ADDRESS);
   const [ipfsUploading, setIpfsUploading] = useState(false);
-
-  const formDatas = {
-    passportType: { type: "ordinary" },
-    personalInfo: {
-      gender: "Male",
-      fullName: "John Michael Doe",
-      firstName: "John",
-      surName: "Doe",
-      profession: "Software Engineer",
-      religion: "Christianity",
-      countryCode: "+1",
-      mobileNo: "1234567890",
-      birthCountry: "USA",
-      birthDistrict: "Los Angeles",
-      birthDate: "1990-05-15",
-      citizenType: "By Birth"
-    },
-    address: {
-      district: "Dhaka",
-      city: "Uttara",
-      block: "C",
-      postOffice: "Uttara PO",
-      postalCode: "1230",
-      policeStation: "Uttara East",
-      yes: true,
-      no: false,
-      country: "Bangladesh",
-      district2: "Dhaka",
-      city2: "Motijheel",
-      block2: "B",
-      postOffice2: "Motijheel PO",
-      postalCode2: "1000",
-      policeStation2: "Motijheel PS",
-      officeType: "Regional Passport Office (RPO)"
-    },
-    idDocuments: {
-      prevPassport: "AB1234567",
-      otherPassport: "nothing",
-      nid: "1990123456789"
-    },
-    parentalInfo: {
-      fInfoStatus: true,
-      fatherName: "Michael Doe",
-      fatherProfession: "Doctor",
-      fatherNationality: "American",
-      fatherNid: "1980123456789",
-      mInfoStatus: true,
-      motherName: "Jane Doe",
-      motherProfession: "Teacher",
-      motherNationality: "American",
-      motherNid: "1981123456789",
-      lgiStatus: true,
-      legalGname: "Robert Smith",
-      legalGprofession: "Lawyer",
-      legalGnationality: "American",
-      mhaon: "Yes"
-    },
-    spouseInfo: {
-      maritalStatus: "Married",
-      spouseName: "Anna Doe",
-      spouseProfession: "Architect",
-      spouseNationality: "American"
-    },
-    emergencyContact: {
-      contactRelationShip: "Brother",
-      name: "David Doe",
-      country: "USA",
-      district: "New York",
-      city: "Brooklyn",
-      block: "D",
-      postOffice: "Brooklyn PO",
-      postalCode: "11201",
-      policeStation: "Brooklyn PS",
-      email: "david.doe@example.com",
-      countryCode: "+1",
-      mobileNo: "9876543210"
-    },
-    passportOptions: {
-      validity: "10 Years",
-      price: "5000 BDT"
-    },
-    deliveryAndAppointment: {
-      deliveryType: "Express",
-      price: "1000 BDT",
-      dateTime: "2025-05-28T03:00:00.000Z"
-    }
-  }
 
   // Recursively sort object keys for consistent hashing
   function normalize(obj: any): any {
@@ -268,7 +186,7 @@ const Overview = () => {
             <Card>
               <CardHeader className='flex items-center flex-row justify-between'>
                 <CardTitle className='text-base lg:text-xl'>Personal Information</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(1)}>Edit</Button>
               </CardHeader>
               <CardContent className='space-y-8'>
                 <div className='mx-auto w-full max-w-2xl'>
@@ -307,7 +225,7 @@ const Overview = () => {
             <Card>
               <CardHeader className="flex items-center flex-row justify-between">
                 <CardTitle className='text-base lg:text-xl'>Address</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(2)}>Edit</Button>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
@@ -349,7 +267,7 @@ const Overview = () => {
             <Card className="shadow-sm rounded-xl p-6 bg-card">
               <div className="flex items-center justify-between mb-4">
                 <CardTitle className="text-base lg:text-xl font-semibold">ID Documents</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(3)}>Edit</Button>
               </div>
               <div className="border-t border-border mb-4" />
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
@@ -367,7 +285,7 @@ const Overview = () => {
             <Card>
               <CardHeader className="flex items-center flex-row justify-between">
                 <CardTitle className='text-base lg:text-xl'>Parental Information</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(4)}>Edit</Button>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
@@ -413,7 +331,7 @@ const Overview = () => {
             <Card className="shadow-sm rounded-xl p-6 bg-card">
               <div className="flex items-center justify-between mb-4">
                 <CardTitle className="text-base lg:text-xl font-semibold">Spouse Information</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(5)}>Edit</Button>
               </div>
               <div className="border-t border-border mb-4" />
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
@@ -439,7 +357,7 @@ const Overview = () => {
             <Card>
               <CardHeader className='flex items-center flex-row justify-between'>
                 <CardTitle className='text-base lg:text-xl'>Emergency Contact</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(6)}>Edit</Button>
               </CardHeader>
               <CardContent className='space-y-8'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm md:text-base lg:text-lg'>
@@ -490,7 +408,7 @@ const Overview = () => {
             <Card className="shadow-sm rounded-xl p-6 bg-card">
               <div className="flex items-center justify-between mb-4">
                 <CardTitle className="text-base lg:text-xl font-semibold">Passport Options</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(7)}>Edit</Button>
               </div>
               <div className="border-t border-border mb-4" />
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
@@ -509,7 +427,7 @@ const Overview = () => {
             <Card className="shadow-sm rounded-xl p-6 bg-card">
               <div className="flex items-center justify-between mb-4">
                 <CardTitle className="text-base lg:text-xl font-semibold">Delivery Options and Appointment</CardTitle>
-                <Button>Edit</Button>
+                <Button onClick={() => onEditSection && onEditSection(8)}>Edit</Button>
               </div>
               <div className="border-t border-border mb-4" />
               <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm md:text-base lg:text-lg">
